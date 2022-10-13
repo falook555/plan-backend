@@ -9,13 +9,14 @@ import { useRouter } from 'next/router'
 import ReactInputMask from 'react-input-mask'
 
 const api = config.api
+
 const Planadd = (data) => {
 
     const router = useRouter()
     const [datatable, setDatatable] = React.useState({})
     const [openPlanById, setopenPlanById] = useState(false)
     const [Add, setAdd] = useState(false)
-    const [FormAddPlan, setFormAddPlan] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
+    const [FormAddPlan, setFormAddPlan] = useState({ insBy: data.data.username, ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
 
     useEffect(() => {
         if (data.data.status != '99') {
@@ -153,8 +154,18 @@ const Planadd = (data) => {
     }
 
     const handleOkADD = async () => {
-        console.log(FormAddPlan)
         setAdd(false)
+
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/add-plan`, FormAddPlan, { headers: { "token": token } })
+            res.data.status == 'success' ? toast.success('เพิ่มแผนการปฏิบัติงานสำเร็จ') : toast.error('การเพิ่มข้อมูลล้มเหลว')
+            setFormAddPlan({ insBy: data.data.username, ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
+            getList()
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
     }
 
     const handleCancelADD = () => {
