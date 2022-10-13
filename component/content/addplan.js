@@ -342,13 +342,13 @@ const Planadd = (data) => {
                                         โครงการหนูน้อยศึกษาภูมิปัญญาท้องถิ่นศูนย์พัฒนาเด็กเล็ก
                                         บ้านหนองเข้-หนองตูม
                                     </td>
-                                    <td width={'20%'}>
+                                    <td width={'15%'}>
                                         <div className='row'>
                                             <div className='col-9'>
-                                                <input type="text" className="form-control" id="test" placeholder="กิจกรรมตามโครงการ" />
+                                                <input type="text" className="form-control form-control-sm" id="test" placeholder="กิจกรรมตามโครงการ" />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block'><i class="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <p className='mt-2'>1. โครงการจัดซื้อวัสดุการศึกษาสื่อการเรียนการสอนและเครื่องเล่นพัฒนาการเด็กเล็ก
@@ -373,10 +373,10 @@ const Planadd = (data) => {
                                     <td width={'15%'}>
                                         <div className='row'>
                                             <div className='col-9'>
-                                                <input type="text" className="form-control" id="test" placeholder="กิจกรรมตามโครงการ" />
+                                                <input type="text" className="form-control form-control-sm" id="test" placeholder="ตัวชี้วัดความสำเร็จโครงการ" />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block'><i class="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <p className='mt-2'>เพื่อสร้างความเข้าใจและข้อตกลงร่วมกันระหว่างผู้ปกครองและศูนย์พัฒนาเด็กเล็ก</p>
@@ -386,10 +386,10 @@ const Planadd = (data) => {
                                     <td width={'15%'}>
                                         <div className='row'>
                                             <div className='col-9'>
-                                                <input type="text" className="form-control" id="test" placeholder="กิจกรรมตามโครงการ" />
+                                                <input type="text" className="form-control form-control-sm" id="test" placeholder="เป้าหมาย/จำนวน(ระบุพื้นที่/กลุ่มคน)" />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block'><i class="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <p className='mt-2'>เพื่อสร้างความเข้าใจและข้อตกลงร่วมกันระหว่างผู้ปกครองและศูนย์พัฒนาเด็กเล็ก</p>
@@ -399,21 +399,27 @@ const Planadd = (data) => {
                                     <td width={'15%'}>
                                         <div className='row'>
                                             <div className='col-9'>
-                                                <input type="text" className="form-control" id="test" placeholder="กิจกรรมตามโครงการ" />
+                                                <input type="text" className="form-control form-control-sm" id="test" placeholder="แหล่งงบประมาณ" />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block'><i class="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <p className='mt-2'>ใช้งบประมาณ อบต.</p>
                                     </td>
                                     <td width={'15%'}>
                                         <div className='row'>
-                                            <div className='col-9'>
-                                                <input type="text" className="form-control" id="test" placeholder="กิจกรรมตามโครงการ" />
+                                            <div className='col-12'>
+                                                <input type="text" className="form-control form-control-sm" id="test" placeholder="รายการ" />
                                             </div>
-                                            <div className='col-3'>
-                                                <button className='btn btn-info btn-block'><i class="fas fa-plus"></i></button>
+                                            <div className='col-12 mt-2'>
+                                                <input type="text" className="form-control form-control-sm" id="test" placeholder="จำนวน" />
+                                            </div>
+                                            <div className='col-12 mt-2'>
+                                                <input type="text" className="form-control form-control-sm" id="test" placeholder="คน/ชิ้น/วัน/ช.ม." />
+                                            </div>
+                                            <div className='col-12 mt-2'>
+                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
                                             </div>
                                         </div>
 
@@ -427,7 +433,7 @@ const Planadd = (data) => {
                                         </p>
                                     </td>
                                     <td >100,000.00</td>
-                                    <td>มกราคม 2565 - มกราคม 2566</td>
+                                    <td width={'7%'}>มกราคม 2565 - มกราคม 2566</td>
                                     <td width={'10%'}>กนต์ธร โทนทรัพย์</td>
                                 </tr>
                             </tbody>
