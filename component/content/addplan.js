@@ -13,8 +13,9 @@ const Planadd = (data) => {
 
     const router = useRouter()
     const [datatable, setDatatable] = React.useState({})
-    const [openTable, setopenTable] = useState(false)
+    const [openPlanById, setopenPlanById] = useState(false)
     const [Add, setAdd] = useState(false)
+    const [FormAddPlan, setFormAddPlan] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
 
     useEffect(() => {
         if (data.data.status != '99') {
@@ -45,39 +46,39 @@ const Planadd = (data) => {
         },
         {
             label: 'ยุทธศาสตร์กระทรวง',
-            field: 'nameq',
+            field: 'aph_ministry_strategy',
         },
         {
             label: 'สอดคล้องกับนโยบายปลัดกระทรวง',
-            field: 'namew',
+            field: 'aph_policy',
         },
         {
             label: 'ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข',
-            field: 'namee',
+            field: 'aph_kpi',
         },
         {
             label: 'กลยุทธ์',
-            field: 'namer',
+            field: 'aph_strategy',
         },
         {
             label: 'ผลลัพธ์/ผลผลิต',
-            field: 'namet',
+            field: 'aph_result',
         },
         {
             label: 'โครงการ/กิจกรรม',
-            field: 'namey',
+            field: 'aph_project',
         },
         {
             label: 'รวมงบประมาณทั้งโครงการ',
-            field: 'nameu',
+            field: 'aph_total_budget',
         },
         {
             label: 'กำหนดระยะเวลาในการดำเนินการ',
-            field: 'namei',
+            field: 'aph_period',
         },
         {
             label: 'หน่วยงานรับผิดชอบ',
-            field: 'nameo',
+            field: 'aph_responsible_agency',
         },
         {
             label: 'จัดการ',
@@ -89,7 +90,7 @@ const Planadd = (data) => {
 
         try {
             const token = localStorage.getItem('token')
-            const res = await axios.get(`${api}/get-dept-all`, { headers: { "token": token } })
+            const res = await axios.get(`${api}/get-plan-all`, { headers: { "token": token } })
             // console.log(res)
             const dataInfo = []
             res.data.map((item, i) => {
@@ -97,11 +98,19 @@ const Planadd = (data) => {
                 dataInfo.push(
                     {
                         'id': i + 1,
-                        'nameq': item.name.toLocaleUpperCase(),
+                        'aph_ministry_strategy': item.aph_ministry_strategy,
+                        'aph_policy': item.aph_policy,
+                        'aph_kpi': item.aph_kpi,
+                        'aph_strategy': item.aph_strategy,
+                        'aph_result': item.aph_result,
+                        'aph_project': item.aph_project,
+                        'aph_total_budget': item.aph_total_budget,
+                        'aph_period': item.aph_period,
+                        'aph_responsible_agency': item.aph_responsible_agency,
                         'action': (
                             <>
                                 <div className="btn-group">
-                                    <button type="button" className='btn btn-info btn-block btn-sm' onClick={showModalOpenTable}>
+                                    <button type="button" className='btn btn-info btn-block btn-sm' onClick={showModalOpenPlanById}>
                                         <i className='fas fa-eye' />
                                     </button>
 
@@ -144,6 +153,7 @@ const Planadd = (data) => {
     }
 
     const handleOkADD = async () => {
+        console.log(FormAddPlan)
         setAdd(false)
     }
 
@@ -152,19 +162,19 @@ const Planadd = (data) => {
     }
     // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL ADD
 
-    // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL ADD
-    const showModalOpenTable = () => {
-        setopenTable(true)
+    // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL PLAN BY ID
+    const showModalOpenPlanById = () => {
+        setopenPlanById(true)
     }
 
-    const handleOkOpenTable = async () => {
-        setopenTable(false)
+    const handleOkOpenPlanById = async () => {
+        setopenPlanById(false)
     }
 
-    const handleCancelOpenTable = () => {
-        setopenTable(false)
+    const handleCancelOpenPlanById = () => {
+        setopenPlanById(false)
     }
-    // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL ADD
+    // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL PLAN BY ID
 
 
     return (
@@ -222,84 +232,85 @@ const Planadd = (data) => {
                     <div className="card-body">
                         <div className='row'>
                             <div className="form-group col-lg-6 col-12">
+
                                 <label>ยุทธศาสตร์กระทรวง</label>
-                                <input type="text" className="form-control" placeholder="ชื่อแผนก"
-                                // value={formAddDept.nameDept}
-                                //     onChange={e => {
-                                //         setFormAddDept({ ...formAddDept, nameDept: e.target.value })
-                                //     }}
+                                <input type="text" className="form-control" placeholder="ยุทธศาสตร์กระทรวง"
+                                    value={FormAddPlan.ministry_strategy}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, ministry_strategy: e.target.value })
+                                    }}
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>สอดคล้องกับนโยบายปลัดกระทรวง</label>
-                                <input type="text" className="form-control" placeholder="ชื่อแผนก"
-                                // value={formAddDept.nameDept}
-                                //     onChange={e => {
-                                //         setFormAddDept({ ...formAddDept, nameDept: e.target.value })
-                                //     }}
+                                <input type="text" className="form-control" placeholder="สอดคล้องกับนโยบายปลัดกระทรวง"
+                                    value={FormAddPlan.policy}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, policy: e.target.value })
+                                    }}
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข</label>
-                                <input type="text" className="form-control" placeholder="ชื่อแผนก"
-                                // value={formAddDept.nameDept}
-                                //     onChange={e => {
-                                //         setFormAddDept({ ...formAddDept, nameDept: e.target.value })
-                                //     }}
+                                <input type="text" className="form-control" placeholder="ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข"
+                                    value={FormAddPlan.kpi}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, kpi: e.target.value })
+                                    }}
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>กลยุทธ์</label>
-                                <input type="text" className="form-control" placeholder="ชื่อแผนก"
-                                // value={formAddDept.nameDept}
-                                //     onChange={e => {
-                                //         setFormAddDept({ ...formAddDept, nameDept: e.target.value })
-                                //     }}
+                                <input type="text" className="form-control" placeholder="กลยุทธ์"
+                                    value={FormAddPlan.strategy}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, strategy: e.target.value })
+                                    }}
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>ผลลัพธ์/ผลผลิต</label>
-                                <input type="text" className="form-control" placeholder="ชื่อแผนก"
-                                // value={formAddDept.nameDept}
-                                //     onChange={e => {
-                                //         setFormAddDept({ ...formAddDept, nameDept: e.target.value })
-                                //     }}
+                                <input type="text" className="form-control" placeholder="ผลลัพธ์/ผลผลิต"
+                                    value={FormAddPlan.result}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, result: e.target.value })
+                                    }}
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>โครงการ/กิจกรรม</label>
-                                <input type="text" className="form-control" placeholder="ชื่อแผนก"
-                                // value={formAddDept.nameDept}
-                                //     onChange={e => {
-                                //         setFormAddDept({ ...formAddDept, nameDept: e.target.value })
-                                //     }}
+                                <input type="text" className="form-control" placeholder="โครงการ/กิจกรรม"
+                                    value={FormAddPlan.project}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, project: e.target.value })
+                                    }}
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>รวมงบประมาณทั้งโครงการ</label>
-                                <input type="text" className="form-control" placeholder="ชื่อแผนก"
-                                // value={formAddDept.nameDept}
-                                //     onChange={e => {
-                                //         setFormAddDept({ ...formAddDept, nameDept: e.target.value })
-                                //     }}
+                                <input type="text" className="form-control" placeholder="รวมงบประมาณทั้งโครงการ"
+                                    value={FormAddPlan.total_budget}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, total_budget: e.target.value })
+                                    }}
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>กำหนดระยะเวลาในการดำเนินการ</label>
-                                <input type="text" className="form-control" placeholder="ชื่อแผนก"
-                                // value={formAddDept.nameDept}
-                                //     onChange={e => {
-                                //         setFormAddDept({ ...formAddDept, nameDept: e.target.value })
-                                //     }}
+                                <input type="text" className="form-control" placeholder="กำหนดระยะเวลาในการดำเนินการ"
+                                    value={FormAddPlan.period}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, period: e.target.value })
+                                    }}
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>หน่วยงานรับผิดชอบ</label>
-                                <input type="text" className="form-control" placeholder="ชื่อแผนก"
-                                // value={formAddDept.nameDept}
-                                //     onChange={e => {
-                                //         setFormAddDept({ ...formAddDept, nameDept: e.target.value })
-                                //     }}
+                                <input type="text" className="form-control" placeholder="หน่วยงานรับผิดชอบ"
+                                    value={FormAddPlan.responsible_agency}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, responsible_agency: e.target.value })
+                                    }}
                                 />
                             </div>
                         </div>
@@ -309,7 +320,7 @@ const Planadd = (data) => {
             {/* //---------------------------------------------------------------------------------------------------------------------------------------- END MODAL ADD PLAN */}
 
             {/* ------------------------------------------------------------------------------------------------------------------------------------------ MODAL OPEN */}
-            <Modal title={null} visible={openTable} onOk={handleOkOpenTable} onCancel={handleCancelOpenTable} okText='บันทึก' cancelText='ยกเลิก' width={2500}>
+            <Modal title={null} visible={openPlanById} onOk={handleOkOpenPlanById} onCancel={handleCancelOpenPlanById} footer={false} okText='บันทึก' cancelText='ยกเลิก' width={2500}>
                 <>
                     <p className='text-center text-bold'>แผนปฏิบัติการ ประจำปีงบประมาณ 2565 เครือข่ายสุขภาพอำเภอบ้านด่านลานหอย</p>
                     <span><b>ยุทธศาสตร์กระทรวง : </b> บลาๆๆ</span><br />
@@ -348,7 +359,7 @@ const Planadd = (data) => {
                                                 <input type="text" className="form-control form-control-sm" id="test" placeholder="กิจกรรมตามโครงการ" />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm'><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <p className='mt-2'>1. โครงการจัดซื้อวัสดุการศึกษาสื่อการเรียนการสอนและเครื่องเล่นพัฒนาการเด็กเล็ก
@@ -376,7 +387,7 @@ const Planadd = (data) => {
                                                 <input type="text" className="form-control form-control-sm" id="test" placeholder="ตัวชี้วัดความสำเร็จโครงการ" />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm'><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <p className='mt-2'>เพื่อสร้างความเข้าใจและข้อตกลงร่วมกันระหว่างผู้ปกครองและศูนย์พัฒนาเด็กเล็ก</p>
@@ -389,7 +400,7 @@ const Planadd = (data) => {
                                                 <input type="text" className="form-control form-control-sm" id="test" placeholder="เป้าหมาย/จำนวน(ระบุพื้นที่/กลุ่มคน)" />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm'><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <p className='mt-2'>เพื่อสร้างความเข้าใจและข้อตกลงร่วมกันระหว่างผู้ปกครองและศูนย์พัฒนาเด็กเล็ก</p>
@@ -402,7 +413,7 @@ const Planadd = (data) => {
                                                 <input type="text" className="form-control form-control-sm" id="test" placeholder="แหล่งงบประมาณ" />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm'><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         <p className='mt-2'>ใช้งบประมาณ อบต.</p>
@@ -419,7 +430,7 @@ const Planadd = (data) => {
                                                 <input type="text" className="form-control form-control-sm" id="test" placeholder="คน/ชิ้น/วัน/ช.ม." />
                                             </div>
                                             <div className='col-12 mt-2'>
-                                                <button className='btn btn-info btn-block btn-sm'><i class="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm'><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
 
