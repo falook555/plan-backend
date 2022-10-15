@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/router'
 import ReactInputMask from 'react-input-mask'
 
+// pull
+
 const api = config.api
 const Planadd = (data) => {
 
