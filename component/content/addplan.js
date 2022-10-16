@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import ReactInputMask from 'react-input-mask'
 
 const api = config.api
+//pull
 
 const Planadd = (data) => {
 
