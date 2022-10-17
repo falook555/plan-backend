@@ -7,7 +7,7 @@ import axios from 'axios'
 import config from '../config'
 import Dashboard from '../component/content/dashboard'
 import Controluser from '../component/content/controluser'
-import { ToastContainer, toast, Flip } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Modal } from 'antd';
 import Deptadd from '../component/content/deptadd'
