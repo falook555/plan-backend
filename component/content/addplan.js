@@ -26,8 +26,17 @@ const Planadd = (data) => {
     const [dataBSARR, setDataBSARR] = useState([])
     const [dataBUDARR, setDataBUDARR] = useState([])
 
-    const [block, setBlock] = useState(true)
+    const [blockA, setBlockA] = useState(true)
+    const [blockB, setBlockB] = useState(true)
+    const [blockC, setBlockC] = useState(true)
+    const [blockD, setBlockD] = useState(true)
+    const [blockE, setBlockE] = useState(true)
+
     const [Activity, setActivity] = useState({ id_head: '', detail: '' })
+    const [PSI, setPSI] = useState({ id_head: '', detail: '' })
+    const [Target, setTarget] = useState({ id_head: '', detail: '' })
+    const [BS, setBS] = useState({ id_head: '', detail: '' })
+    const [BUD, setBUD] = useState({ id_head: '', detail: '' })
 
     useEffect(() => {
         if (data.data.status != '99') {
@@ -576,15 +585,15 @@ const Planadd = (data) => {
                                                     onChange={e => {
                                                         setActivity({ ...Activity, detail: e.target.value })
                                                         if (e.target.value.length > 0) {
-                                                            setBlock(false)
+                                                            setBlockA(false)
                                                         } else {
-                                                            setBlock(true)
+                                                            setBlockA(true)
                                                         }
                                                     }}
                                                 />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm' disabled={block}><i className="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm' disabled={blockA}><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         {
@@ -601,10 +610,20 @@ const Planadd = (data) => {
                                     <td width={'15%'}>
                                         <div className='row'>
                                             <div className='col-9'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="ตัวชี้วัดความสำเร็จโครงการ" />
+                                                <input type="text" className="form-control form-control-sm" placeholder="ตัวชี้วัดความสำเร็จโครงการ"
+                                                    value={PSI.detail}
+                                                    onChange={e => {
+                                                        setPSI({ ...PSI, detail: e.target.value })
+                                                        if (e.target.value.length > 0) {
+                                                            setBlockB(false)
+                                                        } else {
+                                                            setBlockB(true)
+                                                        }
+                                                    }}
+                                                />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm'><i className="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm' disabled={blockB}><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         {
