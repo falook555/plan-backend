@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/router'
 
 const api = config.api
-//pull
+//pull 2
 
 const Planadd = (data) => {
 
