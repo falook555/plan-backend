@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Modal, Popconfirm } from 'antd'
 import axios from 'axios'
 import config from '../../config'
-import { ToastContainer, toast, Flip } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/router'
 
@@ -12,30 +12,39 @@ const api = config.api
 const Planadd = (data) => {
 
     const router = useRouter()
+
+    // ---------------------------------------------------------------------------------------------------- START DATATABLE
     const [datatable, setDatatable] = React.useState({})
+
+    // ---------------------------------------------------------------------------------------------------- START MODAL
     const [openPlanById, setopenPlanById] = useState(false)
     const [Add, setAdd] = useState(false)
     const [Edit, setEdit] = useState(false)
+
+    // ---------------------------------------------------------------------------------------------------- START ADD, EDIT, GET BY ID
     const [FormAddPlan, setFormAddPlan] = useState({ insBy: data.data.username, ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
     const [FormEditPlan, setFormEditPlan] = useState({ id: '', upBy: data.data.username, ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
     const [FormPlanById, setFormPlanById] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
+
+    // ---------------------------------------------------------------------------------------------------- START GET DATA DETAIL
     const [dataActivityARR, setDataActivityARR] = useState([])
     const [dataPSIARR, setDataPSIARR] = useState([])
     const [dataTargetARR, setDataTargetARR] = useState([])
     const [dataBSARR, setDataBSARR] = useState([])
     const [dataBUDARR, setDataBUDARR] = useState([])
 
-    const [blockA, setBlockA] = useState(true)
-    const [blockB, setBlockB] = useState(true)
-    const [blockC, setBlockC] = useState(true)
-    const [blockD, setBlockD] = useState(true)
-    const [blockE, setBlockE] = useState(true)
+    // ---------------------------------------------------------------------------------------------------- START ADD DETAIL PLAN + BLOCK BUTTON
+    const [blockActivity, setBlockActivity] = useState(true)
+    const [blockPSI, setBlockPSI] = useState(true)
+    const [blockTarget, setBlockTarget] = useState(true)
+    const [blockBS, setBlockBS] = useState(true)
+    const [blockBUD, setBlockBUD] = useState(true)
 
     const [Activity, setActivity] = useState({ id_head: '', detail: '' })
     const [PSI, setPSI] = useState({ id_head: '', detail: '' })
     const [Target, setTarget] = useState({ id_head: '', detail: '' })
     const [BS, setBS] = useState({ id_head: '', detail: '' })
-    const [BUD, setBUD] = useState({ id_head: '', detail: '' })
+    const [BUD, setBUD] = useState({ id_head: '', detail: '', price: '' })
 
     useEffect(() => {
         if (data.data.status != '99') {
@@ -96,9 +105,10 @@ const Planadd = (data) => {
             field: 'action',
         },
     ]
+
+
     //---------------------------------------------------------------------------------------------------------------------------- START GET DATA
     const getList = async () => {
-
         try {
             const token = localStorage.getItem('token')
             const res = await axios.get(`${api}/get-plan-all`, { headers: { "token": token } })
@@ -157,6 +167,7 @@ const Planadd = (data) => {
         }
     }
     //---------------------------------------------------------------------------------------------------------------------------- END GET DATA
+
 
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL ADD
     const showModalADD = () => {
@@ -233,12 +244,13 @@ const Planadd = (data) => {
     }
     // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL EDIT
 
+
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL PLAN BY ID
     const showModalOpenPlanById = async (id) => {
         setopenPlanById(true)
         // console.log(id)
-        const token = localStorage.getItem('token')
         try {
+            const token = localStorage.getItem('token')
             const res = await axios.get(`${api}/get-plan-by-id/${id}`, { headers: { "token": token } })
             // console.log(res.data)
             res.data.map((item, i) => {
@@ -257,57 +269,282 @@ const Planadd = (data) => {
                 })
 
                 setActivity({ ...Activity, id_head: item.id })
+                setPSI({ ...PSI, id_head: item.id })
+                setTarget({ ...Target, id_head: item.id })
+                setBS({ ...BS, id_head: item.id })
+                setBUD({ ...BUD, id_head: item.id })
             })
 
         } catch (error) {
             console.log(error)
         }
-        // activity
-        try {
-            const resActivity = await axios.get(`${api}/get-activity-by-id/${id}`, { headers: { "token": token } })
-            setDataActivityARR(resActivity.data)
-        } catch (error) {
-            console.log(error)
-        }
 
-        // project-success-indicator
-        try {
-            const resPSI = await axios.get(`${api}/get-project-success-indicator-by-id/${id}`, { headers: { "token": token } })
-            setDataPSIARR(resPSI.data)
-        } catch (error) {
-            console.log(error)
-        }
-
-        // target
-        try {
-            const resTarget = await axios.get(`${api}/get-target-by-id/${id}`, { headers: { "token": token } })
-            setDataTargetARR(resTarget.data)
-        } catch (error) {
-            console.log(error)
-        }
-
-        // budget-source
-        try {
-            const resBS = await axios.get(`${api}/get-budget-source-by-id/${id}`, { headers: { "token": token } })
-            setDataBSARR(resBS.data)
-        } catch (error) {
-            console.log(error)
-        }
-
-        // budget-usage-detail
-        try {
-            const resBUD = await axios.get(`${api}/get-budget-usage-detail-by-id/${id}`, { headers: { "token": token } })
-            setDataBUDARR(resBUD.data)
-        } catch (error) {
-            console.log(error)
-        }
-
+        getActivity(id)
+        getPSI(id)
+        getTarget(id)
+        getBS(id)
+        getBUD(id)
     }
 
     const handleCancelOpenPlanById = () => {
         setopenPlanById(false)
     }
     // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL PLAN BY ID
+
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------- START GET DATA DETAIL
+    const getActivity = async (id) => {
+        // activity
+        try {
+            const token = localStorage.getItem('token')
+            const resActivity = await axios.get(`${api}/get-activity-by-id/${id}`, { headers: { "token": token } })
+            setDataActivityARR(resActivity.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getPSI = async (id) => {
+        // project-success-indicator
+        try {
+            const token = localStorage.getItem('token')
+            const resPSI = await axios.get(`${api}/get-project-success-indicator-by-id/${id}`, { headers: { "token": token } })
+            setDataPSIARR(resPSI.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getTarget = async (id) => {
+        // target
+        try {
+            const token = localStorage.getItem('token')
+            const resTarget = await axios.get(`${api}/get-target-by-id/${id}`, { headers: { "token": token } })
+            setDataTargetARR(resTarget.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getBS = async (id) => {
+        // budget-source
+        try {
+            const token = localStorage.getItem('token')
+            const resBS = await axios.get(`${api}/get-budget-source-by-id/${id}`, { headers: { "token": token } })
+            setDataBSARR(resBS.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getBUD = async (id) => {
+        // budget-usage-detail
+        try {
+            const token = localStorage.getItem('token')
+            const resBUD = await axios.get(`${api}/get-budget-usage-detail-by-id/${id}`, { headers: { "token": token } })
+            setDataBUDARR(resBUD.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    // ------------------------------------------------------------------------------------------------------------------------------------------- END GET DATA DETAIL
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------- START DELETE DETAIL
+    const deleteActivity = async (id, idHead) => {
+
+        let data = {
+            'id': id,
+            'id_head': idHead
+        }
+
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/delete-activity`, data, { headers: { "token": token } })
+            // console.log(res.data)
+            res.data.status == 'success' ? toast.success('ลบข้อมูลสำเร็จ') : toast.error('การลบข้อมูลล้มเหลว')
+            getActivity(res.data.idHead)
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+
+    const deletePSI = async (id, idHead) => {
+
+        let data = {
+            'id': id,
+            'id_head': idHead
+        }
+
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/delete-psi`, data, { headers: { "token": token } })
+            // console.log(res.data)
+            res.data.status == 'success' ? toast.success('ลบข้อมูลสำเร็จ') : toast.error('การลบข้อมูลล้มเหลว')
+            getPSI(res.data.idHead)
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+
+    const deleteTarget = async (id, idHead) => {
+
+        let data = {
+            'id': id,
+            'id_head': idHead
+        }
+
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/delete-target`, data, { headers: { "token": token } })
+            // console.log(res.data)
+            res.data.status == 'success' ? toast.success('ลบข้อมูลสำเร็จ') : toast.error('การลบข้อมูลล้มเหลว')
+            getTarget(res.data.idHead)
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+
+    const deleteBS = async (id, idHead) => {
+
+        let data = {
+            'id': id,
+            'id_head': idHead
+        }
+
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/delete-bs`, data, { headers: { "token": token } })
+            // console.log(res.data)
+            res.data.status == 'success' ? toast.success('ลบข้อมูลสำเร็จ') : toast.error('การลบข้อมูลล้มเหลว')
+            getBS(res.data.idHead)
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+
+    const deleteBUD = async (id, idHead) => {
+
+        let data = {
+            'id': id,
+            'id_head': idHead
+        }
+
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/delete-bud`, data, { headers: { "token": token } })
+            // console.log(res.data)
+            res.data.status == 'success' ? toast.success('ลบข้อมูลสำเร็จ') : toast.error('การลบข้อมูลล้มเหลว')
+            getBUD(res.data.idHead)
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------- END DELETE DETAIL
+
+
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------- START ON SUBMIT ADD DETAIL
+    // ------------------------------------------------------------------------------------------------------------------------------------------- START ON SUBMIT ACTIVITY
+    const onSubmitActivity = async () => {
+        // console.log(Activity)
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/add-activity`, Activity, { headers: { "token": token } })
+            // console.log(res.data.idHead)
+            res.data.status == 'success' ? toast.success('เพิ่มกิจกรรมตามโครงการสำเร็จ') : toast.error('การเพิ่มข้อมูลล้มเหลว')
+            getActivity(res.data.idHead)
+            setBlockActivity(true)
+            setActivity({ ...Activity, detail: '' })
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+    // ------------------------------------------------------------------------------------------------------------------------------------------- END ON SUBMIT ACTIVITY
+
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------- START ON SUBMIT PSI
+    const onSubmitPSI = async () => {
+        // console.log(PSI)
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/add-psi`, PSI, { headers: { "token": token } })
+            // console.log(res.data.idHead)
+            res.data.status == 'success' ? toast.success('เพิ่มตัวชี้วัดความสำเร็จโครงการสำเร็จ') : toast.error('การเพิ่มข้อมูลล้มเหลว')
+            getPSI(res.data.idHead)
+            setBlockPSI(true)
+            setPSI({ ...PSI, detail: '' })
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+    // ------------------------------------------------------------------------------------------------------------------------------------------- END ON SUBMIT PSI
+
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------- START ON SUBMIT Target
+    const onSubmitTarget = async () => {
+        // console.log(Target)
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/add-target`, Target, { headers: { "token": token } })
+            // console.log(res.data.idHead)
+            res.data.status == 'success' ? toast.success('เพิ่มเป้าหมาย/จำนวน(ระบุพื้นที่/กลุ่มคน)สำเร็จ') : toast.error('การเพิ่มข้อมูลล้มเหลว')
+            getTarget(res.data.idHead)
+            setBlockTarget(true)
+            setTarget({ ...Target, detail: '' })
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+    // ------------------------------------------------------------------------------------------------------------------------------------------- END ON SUBMIT Target
+
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------- START ON SUBMIT BS
+    const onSubmitBS = async () => {
+        // console.log(BS)
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/add-bs`, BS, { headers: { "token": token } })
+            // console.log(res.data.idHead)
+            res.data.status == 'success' ? toast.success('เพิ่มแหล่งงบประมาณสำเร็จ') : toast.error('การเพิ่มข้อมูลล้มเหลว')
+            getBS(res.data.idHead)
+            setBlockBS(true)
+            setBS({ ...BS, detail: '' })
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+    // ------------------------------------------------------------------------------------------------------------------------------------------- END ON SUBMIT BS
+
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------- START ON SUBMIT BUD
+    const onSubmitBUD = async () => {
+        // console.log(BUD)
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/add-bud`, BUD, { headers: { "token": token } })
+            // console.log(res.data.idHead)
+            res.data.status == 'success' ? toast.success('เพิ่มรายละเอียดการใช้งบประมาณ (บาท)สำเร็จ') : toast.error('การเพิ่มข้อมูลล้มเหลว')
+            getBUD(res.data.idHead)
+            setBlockBUD(true)
+            setBUD({ ...BUD, detail: '', price: '' })
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
+    // ------------------------------------------------------------------------------------------------------------------------------------------- END ON SUBMIT BUD
+    // ------------------------------------------------------------------------------------------------------------------------------------------- END ON SUBMIT ADD DETAIL
+
 
 
     return (
@@ -584,22 +821,24 @@ const Planadd = (data) => {
                                                     onChange={e => {
                                                         setActivity({ ...Activity, detail: e.target.value })
                                                         if (e.target.value.length > 0) {
-                                                            setBlockA(false)
+                                                            // console.log(Activity)
+                                                            setBlockActivity(false)
                                                         } else {
-                                                            setBlockA(true)
+                                                            setBlockActivity(true)
                                                         }
                                                     }}
                                                 />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm' disabled={blockA}><i className="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm' disabled={blockActivity} onClick={onSubmitActivity}><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         {
                                             dataActivityARR.map((item1, i1) => {
+                                                // console.log(item1)
                                                 return <p className='mt-2' key={i1} >
                                                     {i1 + 1}) {item1.dt_activity}
-                                                    &emsp;<button className='btn btn-danger btn-sm'><i className="fa fa-trash" /></button>
+                                                    &emsp;<button className='btn btn-danger btn-sm' onClick={() => deleteActivity(item1.id, item1.id_head)}><i className="fa fa-trash" /></button>
                                                 </p>
                                             })
                                         }
@@ -614,22 +853,23 @@ const Planadd = (data) => {
                                                     onChange={e => {
                                                         setPSI({ ...PSI, detail: e.target.value })
                                                         if (e.target.value.length > 0) {
-                                                            setBlockB(false)
+                                                            // console.log(PSI)
+                                                            setBlockPSI(false)
                                                         } else {
-                                                            setBlockB(true)
+                                                            setBlockPSI(true)
                                                         }
                                                     }}
                                                 />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm' disabled={blockB}><i className="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm' disabled={blockPSI} onClick={onSubmitPSI}><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         {
                                             dataPSIARR.map((item2, i2) => {
                                                 return <p className='mt-2' key={i2} >
                                                     {i2 + 1}) {item2.dt_project_success_indicator}
-                                                    &emsp;<button className='btn btn-danger btn-sm'><i className="fa fa-trash" /></button>
+                                                    &emsp;<button className='btn btn-danger btn-sm' onClick={() => deletePSI(item2.id, item2.id_head)}><i className="fa fa-trash" /></button>
                                                 </p>
                                             })
                                         }
@@ -638,17 +878,28 @@ const Planadd = (data) => {
                                     <td width={'15%'}>
                                         <div className='row'>
                                             <div className='col-9'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="เป้าหมาย/จำนวน(ระบุพื้นที่/กลุ่มคน)" />
+                                                <input type="text" className="form-control form-control-sm" placeholder="เป้าหมาย/จำนวน(ระบุพื้นที่/กลุ่มคน)"
+                                                    value={Target.detail}
+                                                    onChange={e => {
+                                                        setTarget({ ...Target, detail: e.target.value })
+                                                        if (e.target.value.length > 0) {
+                                                            // console.log(Target)
+                                                            setBlockTarget(false)
+                                                        } else {
+                                                            setBlockTarget(true)
+                                                        }
+                                                    }}
+                                                />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm'><i className="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm' disabled={blockTarget} onClick={onSubmitTarget}><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         {
                                             dataTargetARR.map((item3, i3) => {
                                                 return <p className='mt-2' key={i3} >
                                                     {i3 + 1}) {item3.dt_target}
-                                                    &emsp;<button className='btn btn-danger btn-sm'><i className="fa fa-trash" /></button>
+                                                    &emsp;<button className='btn btn-danger btn-sm' onClick={() => deleteTarget(item3.id, item3.id_head)}><i className="fa fa-trash" /></button>
                                                 </p>
                                             })
                                         }
@@ -657,17 +908,28 @@ const Planadd = (data) => {
                                     <td width={'10%'}>
                                         <div className='row'>
                                             <div className='col-9'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="แหล่งงบประมาณ" />
+                                                <input type="text" className="form-control form-control-sm" placeholder="แหล่งงบประมาณ"
+                                                    value={BS.detail}
+                                                    onChange={e => {
+                                                        setBS({ ...BS, detail: e.target.value })
+                                                        if (e.target.value.length > 0) {
+                                                            // console.log(BS)
+                                                            setBlockBS(false)
+                                                        } else {
+                                                            setBlockBS(true)
+                                                        }
+                                                    }}
+                                                />
                                             </div>
                                             <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm'><i className="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm' disabled={blockBS} onClick={onSubmitBS}><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         {
                                             dataBSARR.map((item4, i4) => {
                                                 return <p className='mt-2' key={i4} >
                                                     {i4 + 1}) {item4.dt_budget_source}
-                                                    &emsp;<button className='btn btn-danger btn-sm'><i className="fa fa-trash" /></button>
+                                                    &emsp;<button className='btn btn-danger btn-sm' onClick={() => deleteBS(item4.id, item4.id_head)}><i className="fa fa-trash" /></button>
                                                 </p>
                                             })
                                         }
@@ -676,20 +938,42 @@ const Planadd = (data) => {
                                     <td width={'15%'}>
                                         <div className='row'>
                                             <div className='col-12'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="รายละเอียด" />
+                                                <input type="text" className="form-control form-control-sm" placeholder="รายละเอียด"
+                                                    value={BUD.detail}
+                                                    onChange={e => {
+                                                        setBUD({ ...BUD, detail: e.target.value })
+                                                        if (e.target.value.length > 0 && BUD.price.length > 0) {
+                                                            // console.log(BUD)
+                                                            setBlockBUD(false)
+                                                        } else {
+                                                            setBlockBUD(true)
+                                                        }
+                                                    }}
+                                                />
                                             </div>
                                             <div className='col-12 mt-2'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="จำนวนเงิน" />
+                                                <input type="text" className="form-control form-control-sm" placeholder="จำนวนเงิน"
+                                                    value={BUD.price}
+                                                    onChange={e => {
+                                                        setBUD({ ...BUD, price: e.target.value })
+                                                        if (e.target.value.length > 0 && BUD.detail.length > 0) {
+                                                            // console.log(BUD)
+                                                            setBlockBUD(false)
+                                                        } else {
+                                                            setBlockBUD(true)
+                                                        }
+                                                    }}
+                                                />
                                             </div>
                                             <div className='col-12 mt-2'>
-                                                <button className='btn btn-info btn-block btn-sm'><i className="fas fa-plus"></i></button>
+                                                <button className='btn btn-info btn-block btn-sm' disabled={blockBUD} onClick={onSubmitBUD}><i className="fas fa-plus"></i></button>
                                             </div>
                                         </div>
                                         {
                                             dataBUDARR.map((item5, i5) => {
                                                 return <p className='mt-2' key={i5} >
                                                     {i5 + 1}) {item5.dt_budget_usage_detail} เป็นเงิน {item5.dt_budget_usage_price} บาท
-                                                    &emsp;<button className='btn btn-danger btn-sm'><i className="fa fa-trash" /></button>
+                                                    &emsp;<button className='btn btn-danger btn-sm' onClick={() => deleteBUD(item5.id, item5.id_head)}><i className="fa fa-trash" /></button>
                                                 </p>
                                             })
                                         }
