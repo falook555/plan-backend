@@ -28,7 +28,7 @@ a {
 
 .sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active,
 .sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
-  background-color: #18A72A;
+  background-color: #0a9461;
   color: #fff;
 }
 
@@ -47,7 +47,7 @@ a {
 table thead.mdb-dataTable-head {
   cursor: pointer;
   color: #fff;
-  background-color: #18A72A;
+  background-color: #0a9461;
   /* background-color: #0f4429; */
 }
 

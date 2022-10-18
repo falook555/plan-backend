@@ -29,7 +29,7 @@ class MyDocument extends Document {
 
 
                 </Head>
-                <body style={{ fontFamily: 'Kanit' }} className="hold-transition sidebar-mini layout-fixed">
+                <body style={{ fontFamily: 'Kanit' }} className="sidebar-mini sidebar-open sidebar-collapse">
                     <div className="wrapper">
                         <Main />
                         <NextScript />
