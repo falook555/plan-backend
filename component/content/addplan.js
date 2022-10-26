@@ -101,6 +101,10 @@ const Planadd = (data) => {
             field: 'aph_responsible_agency',
         },
         {
+            label: 'สถานะ',
+            field: 'status',
+        },
+        {
             label: 'จัดการ',
             field: 'action',
         },
@@ -115,7 +119,7 @@ const Planadd = (data) => {
             // console.log(res)
             const dataInfo = []
             res.data.map((item, i) => {
-                // console.log(item)
+                console.log(item)
                 dataInfo.push(
                     {
                         'id': i + 1,
@@ -128,10 +132,11 @@ const Planadd = (data) => {
                         'aph_total_budget': item.aph_total_budget,
                         'aph_period': item.aph_period,
                         'aph_responsible_agency': item.aph_responsible_agency,
+                        'status': (<><a>{item.aph_status == '1' ? 'ผ่านขั้นที่ 1' : item.aph_status == '2' ? 'ผ่านขั้นที่ 2' : item.aph_status == '3' ? 'ผ่านขั้นที่ 3' : item.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}</a></>),
                         'action': (
                             <>
                                 <div className="btn-group">
-                                    <button type="button" className='btn btn-info btn-block btn-sm' onClick={() => showModalOpenPlanById(item.id)}>
+                                    <button type="button" className='btn btn-info btn-sm' onClick={() => showModalOpenPlanById(item.id)}>
                                         <i className='fas fa-eye' />
                                     </button>
 
