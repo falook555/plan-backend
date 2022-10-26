@@ -173,7 +173,7 @@ const Approve = (data) => {
                         'aph_total_budget': item.aph_total_budget,
                         'aph_period': item.aph_period,
                         'aph_responsible_agency': item.aph_responsible_agency,
-                        'status': (<><a onClick={() => showModalOpenTimeline(item.id)}>{item.aph_status == '1' ? 'ผ่านขั้นที่ 1' : item.aph_status == '2' ? 'ผ่านขั้นที่ 2' : item.aph_status == '3' ? 'ผ่านขั้นที่ 3' : item.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}</a></>),
+                        'status': (<><a onClick={() => showModalOpenTimeline(item.id)}>{item.aph_status == '1' ? 'ผ่านขั้นที่ 1' : item.aph_status == '2' ? 'ผ่านขั้นที่ 2' : item.aph_status == '3' ? 'ผ่านขั้นที่ 3' : item.aph_status == '4' ? 'จบโครงการ' : item.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}</a></>),
                         'action': (
                             <>
                                 <div className="btn-group">
@@ -253,7 +253,7 @@ const Approve = (data) => {
 
     const handleOkOpenDiscuss = async () => {
         setopenDiscuss(false)
-        console.log(formDiscuss)
+        // console.log(formDiscuss)
     }
 
     const handleCancelOpenDiscuss = () => {
@@ -263,7 +263,7 @@ const Approve = (data) => {
 
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL TIMELINE
     const showModalOpenTimeline = async (id) => {
-        console.log(id)
+        // console.log(id)
         setOpenTimeline(true)
     }
 
