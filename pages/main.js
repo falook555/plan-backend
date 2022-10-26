@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Modal } from 'antd';
 import Deptadd from '../component/content/deptadd'
 import Planadd from '../component/content/addplan'
+import Approve from '../component/content/approves'
 
 const api = config.api
 
@@ -77,6 +78,15 @@ const Main = () => {
             pathname: '/main',
             query: {
                 path: 'add-plan'
+            },
+        })
+    }
+
+    const Approves = () => {
+        router.push({
+            pathname: '/main',
+            query: {
+                path: 'approves'
             },
         })
     }
@@ -290,6 +300,15 @@ const Main = () => {
                                                 </p>
                                             </a>
                                         </li>
+
+                                        <li className="nav-item">
+                                            <a className={path == 'approves' ? 'nav-link active' : 'nav-link'} onClick={Approves}>
+                                                <i className="nav-icon fa fa-sitemap" />
+                                                <p>
+                                                    งานประกัน
+                                                </p>
+                                            </a>
+                                        </li>
                                         {/* <li className="nav-item">
                                             <a className='nav-link' href='static/dist/manual/manual.pdf' target={'_blank'} rel="noreferrer">
                                                 <i className="nav-icon fa fa-file-pdf" />
@@ -310,7 +329,8 @@ const Main = () => {
                                 path == 'controluser' ? <Controluser data={profile} />
                                     : path == 'controldept' ? <Deptadd data={profile} />
                                         : path == 'add-plan' ? <Planadd data={profile} />
-                                            : <Dashboard />
+                                            : path == 'approves' ? <Approve data={profile} />
+                                                : <Dashboard />
                             }
                         </div>
                         {/* --------------------------------------------------------------------------------------------------------------------------------------------- CONTENT */}
