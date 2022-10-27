@@ -16,9 +16,8 @@ const Approve = (data) => {
     // ---------------------------------------------------------------------------------------------------- START DATATABLE
     const [datatable, setDatatable] = React.useState({})
     const [FormPlanById, setFormPlanById] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
-    const [formDiscuss, setFormDiscuss] = useState({ username: data.data.username, id: '', status: '', note: '' })
+    const [formDiscuss, setFormDiscuss] = useState({ username: '', id: '', status: '', note: '' })
     const [openPlanById, setopenPlanById] = useState(false)
-    const [openDiscuss, setopenDiscuss] = useState(false)
     const [openTimeline, setOpenTimeline] = useState(false)
     // ---------------------------------------------------------------------------------------------------- START GET DATA DETAIL
     const [dataActivityARR, setDataActivityARR] = useState([])
@@ -180,9 +179,6 @@ const Approve = (data) => {
                                     <button type="button" className='btn btn-info btn-sm' onClick={() => showModalOpenPlanById(item.id)}>
                                         <i className='fas fa-eye' />
                                     </button>
-                                    <button type="button" className='btn btn-warning btn-sm' onClick={() => showModalOpenDiscuss(item.id)}>
-                                        พิจารณา
-                                    </button>
                                 </div>
                             </>
                         )
@@ -208,6 +204,11 @@ const Approve = (data) => {
     const showModalOpenPlanById = async (id) => {
         setopenPlanById(true)
         // console.log(id)
+        setFormDiscuss({
+            ...formDiscuss,
+            username: data.data.username,
+            id: id
+        })
         try {
             const token = localStorage.getItem('token')
             const res = await axios.get(`${api}/get-plan-by-id/${id}`, { headers: { "token": token } })
@@ -239,27 +240,14 @@ const Approve = (data) => {
         getBUD(id)
     }
 
+    const handleOkOpenPlanById = () => {
+        setopenPlanById(false)
+        console.log(formDiscuss)
+    }
     const handleCancelOpenPlanById = () => {
         setopenPlanById(false)
     }
     // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL PLAN BY ID
-
-
-    // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL DISCUSS
-    const showModalOpenDiscuss = async (id) => {
-        setopenDiscuss(true)
-        setFormDiscuss({ ...formDiscuss, id: id })
-    }
-
-    const handleOkOpenDiscuss = async () => {
-        setopenDiscuss(false)
-        // console.log(formDiscuss)
-    }
-
-    const handleCancelOpenDiscuss = () => {
-        setopenDiscuss(false)
-    }
-    // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL DISCUSS
 
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL TIMELINE
     const showModalOpenTimeline = async (id) => {
@@ -319,7 +307,7 @@ const Approve = (data) => {
 
 
             {/* ------------------------------------------------------------------------------------------------------------------------------------------ MODAL OPEN VIEW*/}
-            <Modal title={null} visible={openPlanById} onCancel={handleCancelOpenPlanById} footer={false} width={2500}>
+            <Modal title={null} visible={openPlanById} onOk={handleOkOpenPlanById} onCancel={handleCancelOpenPlanById} okText='บันทึก' cancelText='ยกเลิก' width={2500}>
                 <>
                     <p className='text-center text-bold'>แผนปฏิบัติการ ประจำปีงบประมาณ 2565 เครือข่ายสุขภาพอำเภอบ้านด่านลานหอย</p>
                     <span><b>ยุทธศาสตร์กระทรวง : </b> {FormPlanById.ministry_strategy}</span><br />
@@ -433,56 +421,58 @@ const Approve = (data) => {
                                 </tr>
                             </tfoot>
                         </table>
+
+                        <div className='row mt-3'>
+                            <div className='col-6 offset-lg-6'>
+                                <div className='card' style={{ backgroundColor: '#f7faf9' }}>
+                                    <div className='card-header border-0'>
+                                        <div className='form-group'>
+                                            <label><u>พิจารณาโครงการ</u></label>
+                                            <select className="browser-default custom-select"
+                                                onChange={e => {
+                                                    setFormDiscuss({ ...formDiscuss, status: e.target.value })
+                                                }}
+                                            >
+                                                <option value='0'>
+                                                    กรุณาเลือก
+                                                </option>
+                                                <option value='9'>
+                                                    ไม่ผ่าน
+                                                </option>
+                                                <option value='1'>
+                                                    ผ่านขั้นที่ 1
+                                                </option>
+                                                <option value='2'>
+                                                    ผ่านขั้นที่ 2
+                                                </option>
+                                                <option value='3'>
+                                                    ผ่านขั้นที่ 3
+                                                </option>
+                                                <option value='4'>
+                                                    จบโครงการ
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label><u>เนื่องจาก</u></label>
+                                            <textarea rows="5" cols="50" className="form-control" type="text" placeholder="เนื่องจาก..."
+                                                onChange={e => {
+                                                    setFormDiscuss({ ...formDiscuss, note: e.target.value })
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </>
             </Modal>
             {/* ------------------------------------------------------------------------------------------------------------------------------------------ MODAL OPEN VIEW*/}
 
-            {/* // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL DISCUSS */}
-            <Modal title={null} visible={openDiscuss} onOk={handleOkOpenDiscuss} onCancel={handleCancelOpenDiscuss} okText='บันทึก' cancelText='ยกเลิก' width={700}>
-                <>
-                    <div className="card-body">
-                        <div className='form-group'>
-                            <label>พิจารณาโครงการ</label>
-                            <select className="browser-default custom-select"
-                                onChange={e => {
-                                    setFormDiscuss({ ...formDiscuss, status: e.target.value })
-                                }}
-                            >
-                                <option value='0'>
-                                    กรุณาเลือก
-                                </option>
-                                <option value='9'>
-                                    ไม่ผ่าน
-                                </option>
-                                <option value='1'>
-                                    ผ่านขั้นที่ 1
-                                </option>
-                                <option value='2'>
-                                    ผ่านขั้นที่ 2
-                                </option>
-                                <option value='3'>
-                                    ผ่านขั้นที่ 3
-                                </option>
-                                <option value='4'>
-                                    จบโครงการ
-                                </option>
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label>เนื่องจาก</label>
-                            <textarea rows="5" cols="50" className="form-control" type="text" placeholder="เนื่องจาก..."
-                                onChange={e => {
-                                    setFormDiscuss({ ...formDiscuss, note: e.target.value })
-                                }}
-                            />
-                        </div>
-                    </div>
-                </>
-            </Modal>
-            {/* // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL DISCUSS */}
 
+            {/* // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL TIMELINE */}
             <Modal title={null} visible={openTimeline} onCancel={handleCancelOpenTimeline} footer={false} width={1000}>
                 <>
                     <div className="card-body">
@@ -512,6 +502,8 @@ const Approve = (data) => {
                     </div>
                 </>
             </Modal>
+            {/* // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL TIMELINE */}
+
 
         </div>
     )

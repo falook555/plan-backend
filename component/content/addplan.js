@@ -20,6 +20,7 @@ const Planadd = (data) => {
     const [openPlanById, setopenPlanById] = useState(false)
     const [Add, setAdd] = useState(false)
     const [Edit, setEdit] = useState(false)
+    const [openTimeline, setOpenTimeline] = useState(false)
 
     // ---------------------------------------------------------------------------------------------------- START ADD, EDIT, GET BY ID
     const [FormAddPlan, setFormAddPlan] = useState({ insBy: data.data.username, ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
@@ -172,6 +173,18 @@ const Planadd = (data) => {
         }
     }
     //---------------------------------------------------------------------------------------------------------------------------- END GET DATA
+
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL TIMELINE
+    const showModalOpenTimeline = async (id) => {
+        // console.log(id)
+        setOpenTimeline(true)
+    }
+
+    const handleCancelOpenTimeline = () => {
+        setOpenTimeline(false)
+    }
+    // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL TIMELINE
 
 
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL ADD
@@ -1021,6 +1034,38 @@ const Planadd = (data) => {
                 </>
             </Modal>
             {/* ------------------------------------------------------------------------------------------------------------------------------------------ MODAL OPEN VIEW*/}
+
+            {/* // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL TIMELINE */}
+            <Modal title={null} visible={openTimeline} onCancel={handleCancelOpenTimeline} footer={false} width={1000}>
+                <>
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="timeline">
+
+                                    <div className="time-label">
+                                        <span className="bg-yellow">เริ่มโครงการ</span>
+                                    </div>
+
+                                    <div>
+                                        <i className="fas fa-user bg-green" />
+                                        <div className="timeline-item">
+                                            <span className="time"><i className="fas fa-clock" /> 5 mins ago</span>
+                                            <h3 className="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
+                                        </div>
+                                    </div>
+
+                                    <div className="time-label">
+                                        <span className="bg-green">จบโครงการ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </>
+            </Modal>
+            {/* // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL TIMELINE */}
 
         </div >
 
