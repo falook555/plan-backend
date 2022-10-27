@@ -16,7 +16,10 @@ const Approve = (data) => {
     // ---------------------------------------------------------------------------------------------------- START DATATABLE
     const [datatable, setDatatable] = React.useState({})
     const [FormPlanById, setFormPlanById] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
+    const [formDiscuss, setFormDiscuss] = useState({ username: data.data.username, id: '', status: '', note: '' })
     const [openPlanById, setopenPlanById] = useState(false)
+    const [openDiscuss, setopenDiscuss] = useState(false)
+    const [openTimeline, setOpenTimeline] = useState(false)
     // ---------------------------------------------------------------------------------------------------- START GET DATA DETAIL
     const [dataActivityARR, setDataActivityARR] = useState([])
     const [dataPSIARR, setDataPSIARR] = useState([])
@@ -139,6 +142,10 @@ const Approve = (data) => {
             field: 'aph_responsible_agency',
         },
         {
+            label: 'สถานะ',
+            field: 'status',
+        },
+        {
             label: 'จัดการ',
             field: 'action',
         },
@@ -166,15 +173,15 @@ const Approve = (data) => {
                         'aph_total_budget': item.aph_total_budget,
                         'aph_period': item.aph_period,
                         'aph_responsible_agency': item.aph_responsible_agency,
+                        'status': (<><a onClick={() => showModalOpenTimeline(item.id)}>{item.aph_status == '1' ? 'ผ่านขั้นที่ 1' : item.aph_status == '2' ? 'ผ่านขั้นที่ 2' : item.aph_status == '3' ? 'ผ่านขั้นที่ 3' : item.aph_status == '4' ? 'จบโครงการ' : item.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}</a></>),
                         'action': (
                             <>
                                 <div className="btn-group">
-                                    <button type="button" className='btn btn-info btn-block btn-sm' onClick={() => showModalOpenPlanById(item.id)}>
+                                    <button type="button" className='btn btn-info btn-sm' onClick={() => showModalOpenPlanById(item.id)}>
                                         <i className='fas fa-eye' />
                                     </button>
-
-                                    <button type="button" className='btn btn-warning btn-sm' >
-                                        <i className='fa fa-sitemap' />
+                                    <button type="button" className='btn btn-warning btn-sm' onClick={() => showModalOpenDiscuss(item.id)}>
+                                        พิจารณา
                                     </button>
                                 </div>
                             </>
@@ -236,6 +243,34 @@ const Approve = (data) => {
         setopenPlanById(false)
     }
     // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL PLAN BY ID
+
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL DISCUSS
+    const showModalOpenDiscuss = async (id) => {
+        setopenDiscuss(true)
+        setFormDiscuss({ ...formDiscuss, id: id })
+    }
+
+    const handleOkOpenDiscuss = async () => {
+        setopenDiscuss(false)
+        // console.log(formDiscuss)
+    }
+
+    const handleCancelOpenDiscuss = () => {
+        setopenDiscuss(false)
+    }
+    // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL DISCUSS
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL TIMELINE
+    const showModalOpenTimeline = async (id) => {
+        // console.log(id)
+        setOpenTimeline(true)
+    }
+
+    const handleCancelOpenTimeline = () => {
+        setOpenTimeline(false)
+    }
+    // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL TIMELINE
 
 
     return (
@@ -403,6 +438,80 @@ const Approve = (data) => {
                 </>
             </Modal>
             {/* ------------------------------------------------------------------------------------------------------------------------------------------ MODAL OPEN VIEW*/}
+
+            {/* // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL DISCUSS */}
+            <Modal title={null} visible={openDiscuss} onOk={handleOkOpenDiscuss} onCancel={handleCancelOpenDiscuss} okText='บันทึก' cancelText='ยกเลิก' width={700}>
+                <>
+                    <div className="card-body">
+                        <div className='form-group'>
+                            <label>พิจารณาโครงการ</label>
+                            <select className="browser-default custom-select"
+                                onChange={e => {
+                                    setFormDiscuss({ ...formDiscuss, status: e.target.value })
+                                }}
+                            >
+                                <option value='0'>
+                                    กรุณาเลือก
+                                </option>
+                                <option value='9'>
+                                    ไม่ผ่าน
+                                </option>
+                                <option value='1'>
+                                    ผ่านขั้นที่ 1
+                                </option>
+                                <option value='2'>
+                                    ผ่านขั้นที่ 2
+                                </option>
+                                <option value='3'>
+                                    ผ่านขั้นที่ 3
+                                </option>
+                                <option value='4'>
+                                    จบโครงการ
+                                </option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>เนื่องจาก</label>
+                            <textarea rows="5" cols="50" className="form-control" type="text" placeholder="เนื่องจาก..."
+                                onChange={e => {
+                                    setFormDiscuss({ ...formDiscuss, note: e.target.value })
+                                }}
+                            />
+                        </div>
+                    </div>
+                </>
+            </Modal>
+            {/* // ------------------------------------------------------------------------------------------------------------------------------------------ END MODAL DISCUSS */}
+
+            <Modal title={null} visible={openTimeline} onCancel={handleCancelOpenTimeline} footer={false} width={1000}>
+                <>
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="timeline">
+
+                                    <div className="time-label">
+                                        <span className="bg-yellow">เริ่มโครงการ</span>
+                                    </div>
+
+                                    <div>
+                                        <i className="fas fa-user bg-green" />
+                                        <div className="timeline-item">
+                                            <span className="time"><i className="fas fa-clock" /> 5 mins ago</span>
+                                            <h3 className="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
+                                        </div>
+                                    </div>
+
+                                    <div className="time-label">
+                                        <span className="bg-green">จบโครงการ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </>
+            </Modal>
 
         </div>
     )
