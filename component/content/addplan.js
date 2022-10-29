@@ -26,6 +26,7 @@ const Planadd = (data) => {
     const [FormAddPlan, setFormAddPlan] = useState({ insBy: data.data.username, ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
     const [FormEditPlan, setFormEditPlan] = useState({ id: '', upBy: data.data.username, ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
     const [FormPlanById, setFormPlanById] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
+    const [statusHeadPlan, setStatusHeadPlan] = useState('')
 
     // ---------------------------------------------------------------------------------------------------- START GET DATA DETAIL
     const [dataActivityARR, setDataActivityARR] = useState([])
@@ -144,16 +145,20 @@ const Planadd = (data) => {
                                     <button type="button" className='btn btn-warning btn-sm' onClick={() => showModalEDIT(item.id)} >
                                         <i className='fas fa-edit' />
                                     </button>
-                                    <Popconfirm
-                                        title="คุณต้องการลบแผนกนี้หรือไม่?"
-                                        // onConfirm={() => delelte(item.id)}
-                                        okText="ยืนยัน"
-                                        cancelText="ยกเลิก"
-                                    >
-                                        <button type="button" className="btn btn-danger btn-sm">
-                                            <i className="fa fa-trash" />
-                                        </button>
-                                    </Popconfirm>
+                                    {
+                                        item.aph_status == 0 ?
+                                            <Popconfirm
+                                                title="คุณต้องการลบแผนกนี้หรือไม่?"
+                                                onConfirm={() => deletePlanHead(item.id)}
+                                                okText="ยืนยัน"
+                                                cancelText="ยกเลิก"
+                                            >
+                                                <button type="button" className="btn btn-danger btn-sm">
+                                                    <i className="fa fa-trash" />
+                                                </button>
+                                            </Popconfirm>
+                                            : ''
+                                    }
                                 </div>
                             </>
                         )
@@ -173,6 +178,24 @@ const Planadd = (data) => {
         }
     }
     //---------------------------------------------------------------------------------------------------------------------------- END GET DATA
+
+    const deletePlanHead = async (id) => {
+
+        let data = {
+            'id': id
+        }
+
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/delete-plan-head`, data, { headers: { "token": token } })
+            // console.log(res.data)
+            res.data.status == 'success' ? toast.success('ลบข้อมูลสำเร็จ') : toast.error('การลบข้อมูลล้มเหลว')
+            getList()
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+    }
 
 
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL TIMELINE
@@ -273,6 +296,7 @@ const Planadd = (data) => {
             // console.log(res.data)
             res.data.map((item, i) => {
                 // console.log(item)
+                setStatusHeadPlan(item.aph_status)
                 setFormPlanById({
                     ...FormPlanById,
                     ministry_strategy: item.aph_ministry_strategy,
@@ -832,25 +856,28 @@ const Planadd = (data) => {
                                     </td>
                                     {/** กิจกรรมตามโครงการ */}
                                     <td width={'15%'}>
-                                        <div className='row'>
-                                            <div className='col-9'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="กิจกรรมตามโครงการ"
-                                                    value={Activity.detail}
-                                                    onChange={e => {
-                                                        setActivity({ ...Activity, detail: e.target.value })
-                                                        if (e.target.value.length > 0) {
-                                                            // console.log(Activity)
-                                                            setBlockActivity(false)
-                                                        } else {
-                                                            setBlockActivity(true)
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm' disabled={blockActivity} onClick={onSubmitActivity}><i className="fas fa-plus"></i></button>
-                                            </div>
-                                        </div>
+                                        {
+                                            statusHeadPlan == 0 ? '-' :
+                                                <div className='row'>
+                                                    <div className='col-9'>
+                                                        <input type="text" className="form-control form-control-sm" placeholder="กิจกรรมตามโครงการ"
+                                                            value={Activity.detail}
+                                                            onChange={e => {
+                                                                setActivity({ ...Activity, detail: e.target.value })
+                                                                if (e.target.value.length > 0) {
+                                                                    // console.log(Activity)
+                                                                    setBlockActivity(false)
+                                                                } else {
+                                                                    setBlockActivity(true)
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className='col-3'>
+                                                        <button className='btn btn-info btn-block btn-sm' disabled={blockActivity} onClick={onSubmitActivity}><i className="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                        }
                                         {
                                             dataActivityARR.map((item1, i1) => {
                                                 // console.log(item1)
@@ -864,25 +891,28 @@ const Planadd = (data) => {
                                     </td>
                                     {/** ตัวชี้วัดความสำเร็จโครงการ */}
                                     <td width={'15%'}>
-                                        <div className='row'>
-                                            <div className='col-9'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="ตัวชี้วัดความสำเร็จโครงการ"
-                                                    value={PSI.detail}
-                                                    onChange={e => {
-                                                        setPSI({ ...PSI, detail: e.target.value })
-                                                        if (e.target.value.length > 0) {
-                                                            // console.log(PSI)
-                                                            setBlockPSI(false)
-                                                        } else {
-                                                            setBlockPSI(true)
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm' disabled={blockPSI} onClick={onSubmitPSI}><i className="fas fa-plus"></i></button>
-                                            </div>
-                                        </div>
+                                        {
+                                            statusHeadPlan == 0 ? '-' :
+                                                <div className='row'>
+                                                    <div className='col-9'>
+                                                        <input type="text" className="form-control form-control-sm" placeholder="ตัวชี้วัดความสำเร็จโครงการ"
+                                                            value={PSI.detail}
+                                                            onChange={e => {
+                                                                setPSI({ ...PSI, detail: e.target.value })
+                                                                if (e.target.value.length > 0) {
+                                                                    // console.log(PSI)
+                                                                    setBlockPSI(false)
+                                                                } else {
+                                                                    setBlockPSI(true)
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className='col-3'>
+                                                        <button className='btn btn-info btn-block btn-sm' disabled={blockPSI} onClick={onSubmitPSI}><i className="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                        }
                                         {
                                             dataPSIARR.map((item2, i2) => {
                                                 return <p className='mt-2' key={i2} >
@@ -894,25 +924,28 @@ const Planadd = (data) => {
                                     </td>
                                     {/** เป้าหมาย/จำนวน(ระบุพื้นที่/กลุ่มคน) */}
                                     <td width={'15%'}>
-                                        <div className='row'>
-                                            <div className='col-9'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="เป้าหมาย/จำนวน(ระบุพื้นที่/กลุ่มคน)"
-                                                    value={Target.detail}
-                                                    onChange={e => {
-                                                        setTarget({ ...Target, detail: e.target.value })
-                                                        if (e.target.value.length > 0) {
-                                                            // console.log(Target)
-                                                            setBlockTarget(false)
-                                                        } else {
-                                                            setBlockTarget(true)
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm' disabled={blockTarget} onClick={onSubmitTarget}><i className="fas fa-plus"></i></button>
-                                            </div>
-                                        </div>
+                                        {
+                                            statusHeadPlan == 0 ? '-' :
+                                                <div className='row'>
+                                                    <div className='col-9'>
+                                                        <input type="text" className="form-control form-control-sm" placeholder="เป้าหมาย/จำนวน(ระบุพื้นที่/กลุ่มคน)"
+                                                            value={Target.detail}
+                                                            onChange={e => {
+                                                                setTarget({ ...Target, detail: e.target.value })
+                                                                if (e.target.value.length > 0) {
+                                                                    // console.log(Target)
+                                                                    setBlockTarget(false)
+                                                                } else {
+                                                                    setBlockTarget(true)
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className='col-3'>
+                                                        <button className='btn btn-info btn-block btn-sm' disabled={blockTarget} onClick={onSubmitTarget}><i className="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                        }
                                         {
                                             dataTargetARR.map((item3, i3) => {
                                                 return <p className='mt-2' key={i3} >
@@ -924,25 +957,28 @@ const Planadd = (data) => {
                                     </td>
                                     {/** แหล่งงบประมาณ */}
                                     <td width={'10%'}>
-                                        <div className='row'>
-                                            <div className='col-9'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="แหล่งงบประมาณ"
-                                                    value={BS.detail}
-                                                    onChange={e => {
-                                                        setBS({ ...BS, detail: e.target.value })
-                                                        if (e.target.value.length > 0) {
-                                                            // console.log(BS)
-                                                            setBlockBS(false)
-                                                        } else {
-                                                            setBlockBS(true)
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className='col-3'>
-                                                <button className='btn btn-info btn-block btn-sm' disabled={blockBS} onClick={onSubmitBS}><i className="fas fa-plus"></i></button>
-                                            </div>
-                                        </div>
+                                        {
+                                            statusHeadPlan == 0 ? '-' :
+                                                <div className='row'>
+                                                    <div className='col-9'>
+                                                        <input type="text" className="form-control form-control-sm" placeholder="แหล่งงบประมาณ"
+                                                            value={BS.detail}
+                                                            onChange={e => {
+                                                                setBS({ ...BS, detail: e.target.value })
+                                                                if (e.target.value.length > 0) {
+                                                                    // console.log(BS)
+                                                                    setBlockBS(false)
+                                                                } else {
+                                                                    setBlockBS(true)
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className='col-3'>
+                                                        <button className='btn btn-info btn-block btn-sm' disabled={blockBS} onClick={onSubmitBS}><i className="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                        }
                                         {
                                             dataBSARR.map((item4, i4) => {
                                                 return <p className='mt-2' key={i4} >
@@ -954,39 +990,42 @@ const Planadd = (data) => {
                                     </td>
                                     {/** รายละเอียดการใช้งบประมาณ (บาท) */}
                                     <td width={'15%'}>
-                                        <div className='row'>
-                                            <div className='col-12'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="รายละเอียด"
-                                                    value={BUD.detail}
-                                                    onChange={e => {
-                                                        setBUD({ ...BUD, detail: e.target.value })
-                                                        if (e.target.value.length > 0 && BUD.price.length > 0) {
-                                                            // console.log(BUD)
-                                                            setBlockBUD(false)
-                                                        } else {
-                                                            setBlockBUD(true)
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className='col-12 mt-2'>
-                                                <input type="text" className="form-control form-control-sm" placeholder="จำนวนเงิน"
-                                                    value={BUD.price}
-                                                    onChange={e => {
-                                                        setBUD({ ...BUD, price: e.target.value })
-                                                        if (e.target.value.length > 0 && BUD.detail.length > 0) {
-                                                            // console.log(BUD)
-                                                            setBlockBUD(false)
-                                                        } else {
-                                                            setBlockBUD(true)
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className='col-12 mt-2'>
-                                                <button className='btn btn-info btn-block btn-sm' disabled={blockBUD} onClick={onSubmitBUD}><i className="fas fa-plus"></i></button>
-                                            </div>
-                                        </div>
+                                        {
+                                            statusHeadPlan == 0 ? '-' :
+                                                <div className='row'>
+                                                    <div className='col-12'>
+                                                        <input type="text" className="form-control form-control-sm" placeholder="รายละเอียด"
+                                                            value={BUD.detail}
+                                                            onChange={e => {
+                                                                setBUD({ ...BUD, detail: e.target.value })
+                                                                if (e.target.value.length > 0 && BUD.price.length > 0) {
+                                                                    // console.log(BUD)
+                                                                    setBlockBUD(false)
+                                                                } else {
+                                                                    setBlockBUD(true)
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className='col-12 mt-2'>
+                                                        <input type="text" className="form-control form-control-sm" placeholder="จำนวนเงิน"
+                                                            value={BUD.price}
+                                                            onChange={e => {
+                                                                setBUD({ ...BUD, price: e.target.value })
+                                                                if (e.target.value.length > 0 && BUD.detail.length > 0) {
+                                                                    // console.log(BUD)
+                                                                    setBlockBUD(false)
+                                                                } else {
+                                                                    setBlockBUD(true)
+                                                                }
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className='col-12 mt-2'>
+                                                        <button className='btn btn-info btn-block btn-sm' disabled={blockBUD} onClick={onSubmitBUD}><i className="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                        }
                                         {
                                             dataBUDARR.map((item5, i5) => {
                                                 return <p className='mt-2' key={i5} >

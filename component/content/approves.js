@@ -240,9 +240,34 @@ const Approve = (data) => {
         getBUD(id)
     }
 
-    const handleOkOpenPlanById = () => {
+    const handleOkOpenPlanById = async () => {
         setopenPlanById(false)
-        console.log(formDiscuss)
+
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/update-status-plan`, formDiscuss, { headers: { "token": token } })
+            // console.log(res)
+            // res.data.status == 'success' ? toast.success('ปรับสถานะแผนการปฏิบัติงานสำเร็จ') : toast.error('ปรับสถานะล้มเหลว')
+            // setFormDiscuss({ id: '', status: '', note: '' })
+            // getList()
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+
+        try {
+            const token = localStorage.getItem('token')
+            let res = await axios.post(`${api}/approve-status-plan`, formDiscuss, { headers: { "token": token } })
+            // console.log(res)
+            res.data.status == 'success' ? toast.success('ปรับสถานะแผนการปฏิบัติงานสำเร็จ') : toast.error('ปรับสถานะล้มเหลว')
+            setFormDiscuss({ id: '', status: '', note: '' })
+            getList()
+        } catch (error) {
+            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
+            console.log(error)
+        }
+
+        // console.log(formDiscuss)
     }
     const handleCancelOpenPlanById = () => {
         setopenPlanById(false)
