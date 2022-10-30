@@ -292,6 +292,8 @@ const Main = () => {
                                             </a>
                                         </li>
 
+                                        <li className="nav-header">Functional</li>
+
                                         <li className="nav-item">
                                             <a className={path == 'add-plan' ? 'nav-link active' : 'nav-link'} onClick={AddPlan}>
                                                 <i className="nav-icon fa fa-upload" />
