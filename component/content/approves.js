@@ -6,6 +6,9 @@ import config from '../../config'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/router'
+import * as moment from 'moment';
+import 'moment/locale/th';
+moment.locale('th')
 // pull 30/10/65
 const api = config.api
 
@@ -16,7 +19,7 @@ const Approve = (data) => {
     // ---------------------------------------------------------------------------------------------------- START DATATABLE
     const [datatable, setDatatable] = React.useState({})
     const [FormPlanById, setFormPlanById] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
-    const [formDiscuss, setFormDiscuss] = useState({ username: '', id: '', status: '', note: '' })
+    const [formDiscuss, setFormDiscuss] = useState({ username: '', id: '', status: 0, note: '' })
     const [openPlanById, setopenPlanById] = useState(false)
     const [openTimeline, setOpenTimeline] = useState(false)
     // ---------------------------------------------------------------------------------------------------- START GET DATA DETAIL
@@ -25,6 +28,7 @@ const Approve = (data) => {
     const [dataTargetARR, setDataTargetARR] = useState([])
     const [dataBSARR, setDataBSARR] = useState([])
     const [dataBUDARR, setDataBUDARR] = useState([])
+    const [dataApprove, setDataApprove] = useState([])
 
     useEffect(() => {
         if (data.data.status != '99') {
@@ -199,6 +203,17 @@ const Approve = (data) => {
     }
     //---------------------------------------------------------------------------------------------------------------------------- END GET DATA
 
+    const getApproveStatus = async (id) => {
+        // activity
+        try {
+            const token = localStorage.getItem('token')
+            const res = await axios.get(`${api}/get-approve-plan-by-id/${id}`, { headers: { "token": token } })
+            setDataApprove(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL PLAN BY ID
     const showModalOpenPlanById = async (id) => {
@@ -238,37 +253,25 @@ const Approve = (data) => {
         getTarget(id)
         getBS(id)
         getBUD(id)
+        // console.log(formDiscuss)
     }
 
     const handleOkOpenPlanById = async () => {
-        setopenPlanById(false)
-
         try {
             const token = localStorage.getItem('token')
-            let res = await axios.post(`${api}/update-status-plan`, formDiscuss, { headers: { "token": token } })
-            // console.log(res)
-            // res.data.status == 'success' ? toast.success('ปรับสถานะแผนการปฏิบัติงานสำเร็จ') : toast.error('ปรับสถานะล้มเหลว')
-            // setFormDiscuss({ id: '', status: '', note: '' })
-            // getList()
-        } catch (error) {
-            // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
-            console.log(error)
-        }
+            let resUSP = await axios.post(`${api}/update-status-plan`, formDiscuss, { headers: { "token": token } })
 
-        try {
-            const token = localStorage.getItem('token')
             let res = await axios.post(`${api}/approve-status-plan`, formDiscuss, { headers: { "token": token } })
-            // console.log(res)
             res.data.status == 'success' ? toast.success('ปรับสถานะแผนการปฏิบัติงานสำเร็จ') : toast.error('ปรับสถานะล้มเหลว')
-            setFormDiscuss({ id: '', status: '', note: '' })
+            setFormDiscuss({ username: '', id: '', status: 0, note: '' })
             getList()
         } catch (error) {
             // toast.error('กรุณากรอกข้อมูลให้ครบถ้วน')
             console.log(error)
         }
-
-        // console.log(formDiscuss)
+        setopenPlanById(false)
     }
+
     const handleCancelOpenPlanById = () => {
         setopenPlanById(false)
     }
@@ -276,7 +279,8 @@ const Approve = (data) => {
 
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL TIMELINE
     const showModalOpenTimeline = async (id) => {
-        // console.log(id)
+        console.log(id)
+        getApproveStatus(id)
         setOpenTimeline(true)
     }
 
@@ -446,7 +450,7 @@ const Approve = (data) => {
                                 </tr>
                             </tfoot>
                         </table>
-
+                        {/* {console.log(formDiscuss)} */}
                         <div className='row mt-3'>
                             <div className='col-6 offset-lg-6'>
                                 <div className='card' style={{ backgroundColor: '#f7faf9' }}>
@@ -454,6 +458,7 @@ const Approve = (data) => {
                                         <div className='form-group'>
                                             <label><u>พิจารณาโครงการ</u></label>
                                             <select className="browser-default custom-select"
+                                                value={formDiscuss.status}
                                                 onChange={e => {
                                                     setFormDiscuss({ ...formDiscuss, status: e.target.value })
                                                 }}
@@ -481,6 +486,7 @@ const Approve = (data) => {
                                         <div className="form-group">
                                             <label><u>เนื่องจาก</u></label>
                                             <textarea rows="5" cols="50" className="form-control" type="text" placeholder="เนื่องจาก..."
+                                                value={formDiscuss.note}
                                                 onChange={e => {
                                                     setFormDiscuss({ ...formDiscuss, note: e.target.value })
                                                 }}
@@ -509,13 +515,22 @@ const Approve = (data) => {
                                         <span className="bg-yellow">เริ่มโครงการ</span>
                                     </div>
 
-                                    <div>
-                                        <i className="fas fa-user bg-green" />
-                                        <div className="timeline-item">
-                                            <span className="time"><i className="fas fa-clock" /> 5 mins ago</span>
-                                            <h3 className="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
-                                        </div>
-                                    </div>
+                                    {
+                                        dataApprove.map((item, i) => {
+                                            console.log(item)
+                                            return <div key={i}>
+                                                <i className="fas fa-user bg-green" />
+                                                <div className="timeline-item">
+                                                    <span className="time"><i className="fas fa-clock" /> {moment(item.apv_upDt).add(543, 'year').format('LLLL')}</span>
+                                                    <h3 className="timeline-header no-border">
+                                                        <span><b>ผู้พิจารณา : </b>{item.apv_upBy}</span><br />
+                                                        <span><b>สถานะ : </b>{item.apv_status == '1' ? 'ผ่านขั้นที่ 1' : item.apv_status == '2' ? 'ผ่านขั้นที่ 2' : item.apv_status == '3' ? 'ผ่านขั้นที่ 3' : item.apv_status == '4' ? 'จบโครงการ' : item.apv_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}<br />
+                                                        </span><b>หมายเหตุ : </b><span>{item.apv_note} </span></h3>
+                                                </div>
+                                            </div>
+                                        })
+                                    }
+
 
                                     <div className="time-label">
                                         <span className="bg-green">จบโครงการ</span>
