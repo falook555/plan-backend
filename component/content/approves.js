@@ -18,7 +18,7 @@ const Approve = (data) => {
 
     // ---------------------------------------------------------------------------------------------------- START DATATABLE
     const [datatable, setDatatable] = React.useState({})
-    const [FormPlanById, setFormPlanById] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '' })
+    const [FormPlanById, setFormPlanById] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '', aph_status: '' })
     const [formDiscuss, setFormDiscuss] = useState({ username: '', id: '', status: 0, note: '' })
     const [openPlanById, setopenPlanById] = useState(false)
     const [openTimeline, setOpenTimeline] = useState(false)
@@ -240,7 +240,8 @@ const Approve = (data) => {
                     project: item.aph_project,
                     total_budget: item.aph_total_budget,
                     period: item.aph_period,
-                    responsible_agency: item.aph_responsible_agency
+                    responsible_agency: item.aph_responsible_agency,
+                    aph_status: item.aph_status
                 })
             })
 
@@ -452,11 +453,24 @@ const Approve = (data) => {
                         </table>
                         {/* {console.log(formDiscuss)} */}
                         <div className='row mt-3'>
-                            <div className='col-6 offset-lg-6'>
+                            <div className='col-6'>
+                                <div className='card' style={{ backgroundColor: '#f7faf9' }}>
+                                    <div className='card-header border-0'>
+                                        <center>
+                                            <h1 style={{ fontSize: '850%', marginTop: '70px', color: 'green', height: '175px' }}>
+                                                <b>
+                                                    {FormPlanById.aph_status == '1' ? 'ผ่านขั้นที่ 1' : FormPlanById.aph_status == '2' ? 'ผ่านขั้นที่ 2' : FormPlanById.aph_status == '3' ? 'ผ่านขั้นที่ 3' : FormPlanById.aph_status == '4' ? 'จบโครงการ' : FormPlanById.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}
+                                                </b>
+                                            </h1>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='col-6'>
                                 <div className='card' style={{ backgroundColor: '#f7faf9' }}>
                                     <div className='card-header border-0'>
                                         <div className='form-group'>
-                                            <label><u>พิจารณาโครงการ</u></label>
+                                            <label><h4><b>พิจารณาโครงการ</b></h4></label>
                                             <select className="browser-default custom-select"
                                                 value={formDiscuss.status}
                                                 onChange={e => {
@@ -484,7 +498,7 @@ const Approve = (data) => {
                                             </select>
                                         </div>
                                         <div className="form-group">
-                                            <label><u>เนื่องจาก</u></label>
+                                            <label><h4><b>เนื่องจาก...</b></h4></label>
                                             <textarea rows="5" cols="50" className="form-control" type="text" placeholder="เนื่องจาก..."
                                                 value={formDiscuss.note}
                                                 onChange={e => {
