@@ -6,13 +6,14 @@ import config from '../../config'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/router'
+import { Select } from 'antd';
 
 const api = config.api
 
 const Planadd = (data) => {
 
     const router = useRouter()
-
+    const { Option } = Select;
     // ---------------------------------------------------------------------------------------------------- START DATATABLE
     const [datatable, setDatatable] = React.useState({})
 
@@ -48,6 +49,12 @@ const Planadd = (data) => {
     const [BS, setBS] = useState({ id_head: '', detail: '' })
     const [BUD, setBUD] = useState({ id_head: '', detail: '', price: '' })
 
+    // ---------------------------------------------------------------------------------------------------- START GET DATA SELECT
+    const [data4excAllARR, setData4excAllARR] = useState([])
+    const [dataPlanByIdARR, setDataPlanByIdARR] = useState([])
+    const [dataProjectByIdARR, setDataProjectByIdARR] = useState([])
+    const [dataIndicatorByIdARR, setDataIndicatorByIdARR] = useState([])
+
     useEffect(() => {
         if (data.data.status != '99') {
             router.push({
@@ -59,6 +66,7 @@ const Planadd = (data) => {
             })
         }
         getList()
+        get4excAll()
     }, [])
 
     const columns = [
@@ -380,7 +388,6 @@ const Planadd = (data) => {
     }
 
     const getBUD = async (id) => {
-        // budget-usage-detail
         try {
             const token = localStorage.getItem('token')
             const resBUD = await axios.get(`${api}/get-budget-usage-detail-by-id/${id}`, { headers: { "token": token } })
@@ -587,7 +594,121 @@ const Planadd = (data) => {
     // ------------------------------------------------------------------------------------------------------------------------------------------- END ON SUBMIT BUD
     // ------------------------------------------------------------------------------------------------------------------------------------------- END ON SUBMIT ADD DETAIL
 
+    //-------------------------------------------------------------------------------------------- START GET DATA SELECT
+    const get4excAll = async () => {
+        try {
+            const token = localStorage.getItem('token')
+            const res = await axios.get(`${api}/get-4exc-all`, { headers: { "token": token } })
+            // console.log(res.data)
+            setData4excAllARR(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
+    const getPlanByIdHead = async (id) => {
+        try {
+            const token = localStorage.getItem('token')
+            const res = await axios.get(`${api}/get-plan-by-id-head/${id}`, { headers: { "token": token } })
+            // console.log(res.data)
+            setDataPlanByIdARR(res.data)
+            // policy
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getProjectByIdHead = async (id) => {
+        try {
+            const token = localStorage.getItem('token')
+            const res = await axios.get(`${api}/get-project-by-id-head/${id}`, { headers: { "token": token } })
+            // console.log(res.data)
+            setDataProjectByIdARR(res.data)
+            // policy
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getIndicatorByIdHead = async (id) => {
+        try {
+            const token = localStorage.getItem('token')
+            const res = await axios.get(`${api}/get-indicator-by-id-head/${id}`, { headers: { "token": token } })
+            // console.log(res.data)
+            setDataIndicatorByIdARR(res.data)
+            // policy
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    //-------------------------------------------------------------------------------------------- END GET DATA SELECT
+
+
+
+    //------------------------------------------------------------------------- START SELECT ADD
+    const Change_ministry_strategy = (value) => {
+        let valueARR = value.split('|x|')
+        setFormAddPlan({
+            ...FormAddPlan,
+            ministry_strategy: valueARR[1],
+            policy: '',
+            kpi: '',
+            strategy: '',
+            project: ''
+        })
+        getPlanByIdHead(valueARR[0])
+        getProjectByIdHead(valueARR[0])
+        getIndicatorByIdHead(valueARR[0])
+    }
+
+    const Change_Policy = (value) => {
+        setFormAddPlan({ ...FormAddPlan, policy: value })
+    }
+
+    const Change_KPI = (value) => {
+        setFormAddPlan({ ...FormAddPlan, kpi: value })
+    }
+
+    const Change_Strategy = (value) => {
+        setFormAddPlan({ ...FormAddPlan, strategy: value })
+    }
+
+    const Change_Project = (value) => {
+        setFormAddPlan({ ...FormAddPlan, project: value })
+    }
+    //------------------------------------------------------------------------- END SELECT ADD
+    //------------------------------------------------------------------------- START SELECT EDIT
+    const Change_ministry_strategy_Edit = (value) => {
+        let valueARR = value.split('|x|')
+        setFormEditPlan({
+            ...FormEditPlan,
+            ministry_strategy: valueARR[1],
+            policy: '',
+            kpi: '',
+            strategy: '',
+            project: ''
+        })
+        getPlanByIdHead(valueARR[0])
+        getProjectByIdHead(valueARR[0])
+        getIndicatorByIdHead(valueARR[0])
+    }
+
+    const Change_Policy_Edit = (value) => {
+        setFormEditPlan({ ...FormEditPlan, policy: value })
+    }
+
+    const Change_KPI_Edit = (value) => {
+        setFormEditPlan({ ...FormEditPlan, kpi: value })
+    }
+
+    const Change_Strategy_Edit = (value) => {
+        setFormEditPlan({ ...FormEditPlan, strategy: value })
+    }
+
+    const Change_Project_Edit = (value) => {
+        setFormEditPlan({ ...FormEditPlan, project: value })
+    }
+    //------------------------------------------------------------------------- END SELECT EDIT
 
     return (
         <div>
@@ -630,7 +751,7 @@ const Planadd = (data) => {
                             </div>
                         </div>
 
-                        <div className='card-body'>
+                        <div className='card-body p-0'>
                             <div className="table-responsive-lg">
                                 <MDBDataTableV5 hover entriesOptions={[10, 20, 30, 40, 50]} entries={10} pagesAmount={4} data={datatable} fullPagination />
                             </div>
@@ -645,40 +766,84 @@ const Planadd = (data) => {
                         <div className='row'>
                             <div className="form-group col-lg-6 col-12">
 
-                                <label>ยุทธศาสตร์กระทรวง</label>
-                                <input type="text" className="form-control" placeholder="ยุทธศาสตร์กระทรวง"
+                                <label>ยุทธศาสตร์กระทรวง *เลือก*</label>
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_ministry_strategy}
+                                    size='large'
                                     value={FormAddPlan.ministry_strategy}
-                                    onChange={e => {
-                                        setFormAddPlan({ ...FormAddPlan, ministry_strategy: e.target.value })
-                                    }}
-                                />
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        data4excAllARR.map((item, i) => {
+                                            return <Option value={item.id + '|x|' + item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
                             </div>
                             <div className="form-group col-lg-6 col-12">
-                                <label>สอดคล้องกับนโยบายปลัดกระทรวง</label>
-                                <input type="text" className="form-control" placeholder="สอดคล้องกับนโยบายปลัดกระทรวง"
+                                <label>สอดคล้องกับนโยบายปลัดกระทรวง *เลือก*</label>
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_Policy}
+                                    size='large'
                                     value={FormAddPlan.policy}
-                                    onChange={e => {
-                                        setFormAddPlan({ ...FormAddPlan, policy: e.target.value })
-                                    }}
-                                />
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        dataPlanByIdARR.map((item, i) => {
+                                            return <Option value={item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
                             </div>
                             <div className="form-group col-lg-6 col-12">
-                                <label>ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข</label>
-                                <input type="text" className="form-control" placeholder="ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข"
+                                <label>ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข *เลือก*</label>
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_KPI}
+                                    size='large'
                                     value={FormAddPlan.kpi}
-                                    onChange={e => {
-                                        setFormAddPlan({ ...FormAddPlan, kpi: e.target.value })
-                                    }}
-                                />
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        dataIndicatorByIdARR.map((item, i) => {
+                                            return <Option value={item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
                             </div>
                             <div className="form-group col-lg-6 col-12">
-                                <label>กลยุทธ์</label>
-                                <input type="text" className="form-control" placeholder="กลยุทธ์"
+                                <label>กลยุทธ์ *เลือก*</label>
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_Strategy}
+                                    size='large'
                                     value={FormAddPlan.strategy}
-                                    onChange={e => {
-                                        setFormAddPlan({ ...FormAddPlan, strategy: e.target.value })
-                                    }}
-                                />
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        dataPlanByIdARR.map((item, i) => {
+                                            return <Option value={item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>ผลลัพธ์/ผลผลิต</label>
@@ -690,13 +855,24 @@ const Planadd = (data) => {
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
-                                <label>โครงการ/กิจกรรม</label>
-                                <input type="text" className="form-control" placeholder="โครงการ/กิจกรรม"
+                                <label>โครงการ/กิจกรรม *เลือก*</label>
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_Project}
+                                    size='large'
                                     value={FormAddPlan.project}
-                                    onChange={e => {
-                                        setFormAddPlan({ ...FormAddPlan, project: e.target.value })
-                                    }}
-                                />
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        dataProjectByIdARR.map((item, i) => {
+                                            return <Option value={item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>รวมงบประมาณทั้งโครงการ</label>
@@ -739,39 +915,108 @@ const Planadd = (data) => {
                             <div className="form-group col-lg-6 col-12">
 
                                 <label>ยุทธศาสตร์กระทรวง</label>
-                                <input type="text" className="form-control" placeholder="ยุทธศาสตร์กระทรวง"
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_ministry_strategy_Edit}
+                                    size='large'
+                                    value={FormEditPlan.ministry_strategy}
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        data4excAllARR.map((item, i) => {
+                                            return <Option value={item.id + '|x|' + item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
+
+                                {/* <input type="text" className="form-control" placeholder="ยุทธศาสตร์กระทรวง"
                                     value={FormEditPlan.ministry_strategy}
                                     onChange={e => {
                                         setFormEditPlan({ ...FormEditPlan, ministry_strategy: e.target.value })
                                     }}
-                                />
+                                /> */}
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>สอดคล้องกับนโยบายปลัดกระทรวง</label>
-                                <input type="text" className="form-control" placeholder="สอดคล้องกับนโยบายปลัดกระทรวง"
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_Policy_Edit}
+                                    size='large'
+                                    value={FormEditPlan.policy}
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        dataPlanByIdARR.map((item, i) => {
+                                            return <Option value={item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
+                                {/* <input type="text" className="form-control" placeholder="สอดคล้องกับนโยบายปลัดกระทรวง"
                                     value={FormEditPlan.policy}
                                     onChange={e => {
                                         setFormEditPlan({ ...FormEditPlan, policy: e.target.value })
                                     }}
-                                />
+                                /> */}
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข</label>
-                                <input type="text" className="form-control" placeholder="ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข"
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_KPI_Edit}
+                                    size='large'
+                                    value={FormEditPlan.kpi}
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        dataIndicatorByIdARR.map((item, i) => {
+                                            return <Option value={item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
+                                {/* <input type="text" className="form-control" placeholder="ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข"
                                     value={FormEditPlan.kpi}
                                     onChange={e => {
                                         setFormEditPlan({ ...FormEditPlan, kpi: e.target.value })
                                     }}
-                                />
+                                /> */}
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>กลยุทธ์</label>
-                                <input type="text" className="form-control" placeholder="กลยุทธ์"
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_Strategy_Edit}
+                                    size='large'
+                                    value={FormEditPlan.strategy}
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        dataPlanByIdARR.map((item, i) => {
+                                            return <Option value={item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
+                                {/* <input type="text" className="form-control" placeholder="กลยุทธ์"
                                     value={FormEditPlan.strategy}
                                     onChange={e => {
                                         setFormEditPlan({ ...FormEditPlan, strategy: e.target.value })
                                     }}
-                                />
+                                /> */}
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>ผลลัพธ์/ผลผลิต</label>
@@ -784,12 +1029,29 @@ const Planadd = (data) => {
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>โครงการ/กิจกรรม</label>
-                                <input type="text" className="form-control" placeholder="โครงการ/กิจกรรม"
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    optionFilterProp="children"
+                                    onChange={Change_Project_Edit}
+                                    size='large'
+                                    value={FormEditPlan.project}
+                                >
+                                    <Option value="">กรุณาเลือก หรือค้นหา</Option>
+                                    {
+                                        dataProjectByIdARR.map((item, i) => {
+                                            return <Option value={item.name} key={i}>
+                                                {item.name}
+                                            </Option>
+                                        })
+                                    }
+                                </Select>
+                                {/* <input type="text" className="form-control" placeholder="โครงการ/กิจกรรม"
                                     value={FormEditPlan.project}
                                     onChange={e => {
                                         setFormEditPlan({ ...FormEditPlan, project: e.target.value })
                                     }}
-                                />
+                                /> */}
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>รวมงบประมาณทั้งโครงการ</label>

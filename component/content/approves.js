@@ -416,9 +416,8 @@ const Approve = (data) => {
 
             <section className="content">
                 <div className="container-fluid">
-
                     <div className="card card-warning">
-                        <div className='card-body'>
+                        <div className='card-body p-0'>
                             <div className="table-responsive-lg">
                                 <MDBDataTableV5 hover entriesOptions={[10, 20, 30, 40, 50]} entries={10} pagesAmount={4} data={datatable} fullPagination />
                             </div>
