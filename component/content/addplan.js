@@ -766,7 +766,7 @@ const Planadd = (data) => {
                         <div className='row'>
                             <div className="form-group col-lg-6 col-12">
 
-                                <label>ยุทธศาสตร์กระทรวง *เลือก*</label>
+                                <label>ยุทธศาสตร์กระทรวง</label>
                                 <Select
                                     showSearch
                                     style={{ width: '100%' }}
@@ -786,7 +786,7 @@ const Planadd = (data) => {
                                 </Select>
                             </div>
                             <div className="form-group col-lg-6 col-12">
-                                <label>สอดคล้องกับนโยบายปลัดกระทรวง *เลือก*</label>
+                                <label>สอดคล้องกับนโยบายปลัดกระทรวง</label>
                                 <Select
                                     showSearch
                                     style={{ width: '100%' }}
@@ -806,7 +806,7 @@ const Planadd = (data) => {
                                 </Select>
                             </div>
                             <div className="form-group col-lg-6 col-12">
-                                <label>ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข *เลือก*</label>
+                                <label>ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข</label>
                                 <Select
                                     showSearch
                                     style={{ width: '100%' }}
@@ -826,7 +826,7 @@ const Planadd = (data) => {
                                 </Select>
                             </div>
                             <div className="form-group col-lg-6 col-12">
-                                <label>กลยุทธ์ *เลือก*</label>
+                                <label>กลยุทธ์</label>
                                 <Select
                                     showSearch
                                     style={{ width: '100%' }}
@@ -855,7 +855,7 @@ const Planadd = (data) => {
                                 />
                             </div>
                             <div className="form-group col-lg-6 col-12">
-                                <label>โครงการ/กิจกรรม *เลือก*</label>
+                                <label>โครงการ/กิจกรรม</label>
                                 <Select
                                     showSearch
                                     style={{ width: '100%' }}
