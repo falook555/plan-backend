@@ -812,7 +812,7 @@ const Planadd = (data) => {
                                 >
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
-                                        dataPlanByIdARR.map((item, i) => {
+                                        dataPolicy.map((item, i) => {
                                             return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
@@ -871,7 +871,14 @@ const Planadd = (data) => {
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>โครงการ/กิจกรรม</label>
-                                <Select
+                                <input type="text" className="form-control" placeholder="รวมงบประมาณทั้งโครงการ"
+                                    value={FormAddPlan.project}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, project: e.target.value })
+                                    }}
+                                />
+
+                                {/* <Select
                                     showSearch
                                     style={{ width: '100%' }}
                                     optionFilterProp="children"
@@ -887,7 +894,7 @@ const Planadd = (data) => {
                                             </Option>
                                         })
                                     }
-                                </Select>
+                                </Select> */}
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>รวมงบประมาณทั้งโครงการ</label>
