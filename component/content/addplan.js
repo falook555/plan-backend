@@ -75,6 +75,10 @@ const Planadd = (data) => {
             field: 'id',
         },
         {
+            label: 'รหัสโครงการ',
+            field: 'aph_plan_id',
+        },
+        {
             label: 'ยุทธศาสตร์กระทรวง',
             field: 'aph_ministry_strategy',
         },
@@ -133,16 +137,17 @@ const Planadd = (data) => {
                 dataInfo.push(
                     {
                         'id': i + 1,
-                        'aph_ministry_strategy': item.aph_ministry_strategy,
-                        'aph_policy': item.aph_policy,
-                        'aph_kpi': item.aph_kpi,
-                        'aph_strategy': item.aph_strategy,
+                        'aph_plan_id': item.aph_plan_id,
+                        'aph_ministry_strategy': item.exc4,
+                        'aph_policy': item.plan2,
+                        'aph_kpi': item.indicator,
+                        'aph_strategy': item.plan1,
                         'aph_result': item.aph_result,
-                        'aph_project': item.aph_project,
+                        'aph_project': item.project,
                         'aph_total_budget': item.aph_total_budget,
                         'aph_period': item.aph_period,
                         'aph_responsible_agency': item.aph_responsible_agency,
-                        'status': (<><a onClick={() => showModalOpenTimeline(item.id)}>{item.aph_status == '1' ? 'ผ่านขั้นที่ 1' : item.aph_status == '2' ? 'ผ่านขั้นที่ 2' : item.aph_status == '3' ? 'ผ่านขั้นที่ 3' : item.aph_status == '4' ? 'จบโครงการ' : item.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}</a></>),
+                        'status': (<><a onClick={() => showModalOpenTimeline(item.id)}>{item.aph_status == '1' ? 'ผ่านอนุมัติแผน' : item.aph_status == '2' ? 'ผ่านอนุมัติโครงการ' : item.aph_status == '3' ? 'สรุปโครงการ' : item.aph_status == '4' ? 'จบโครงการ' : item.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}</a></>),
                         'action': (
                             <>
                                 <div className="btn-group">
@@ -307,12 +312,12 @@ const Planadd = (data) => {
                 setStatusHeadPlan(item.aph_status)
                 setFormPlanById({
                     ...FormPlanById,
-                    ministry_strategy: item.aph_ministry_strategy,
-                    policy: item.aph_policy,
-                    kpi: item.aph_kpi,
-                    strategy: item.aph_strategy,
+                    ministry_strategy: item.exc4,
+                    policy: item.plan2,
+                    kpi: item.indicator,
+                    strategy: item.plan1,
                     result: item.aph_result,
-                    project: item.aph_project,
+                    project: item.project,
                     total_budget: item.aph_total_budget,
                     period: item.aph_period,
                     responsible_agency: item.aph_responsible_agency
@@ -647,18 +652,17 @@ const Planadd = (data) => {
 
     //------------------------------------------------------------------------- START SELECT ADD
     const Change_ministry_strategy = (value) => {
-        let valueARR = value.split('|x|')
         setFormAddPlan({
             ...FormAddPlan,
-            ministry_strategy: valueARR[1],
+            ministry_strategy: value,
             policy: '',
             kpi: '',
             strategy: '',
             project: ''
         })
-        getPlanByIdHead(valueARR[0])
-        getProjectByIdHead(valueARR[0])
-        getIndicatorByIdHead(valueARR[0])
+        getPlanByIdHead(value)
+        getProjectByIdHead(value)
+        getIndicatorByIdHead(value)
     }
 
     const Change_Policy = (value) => {
@@ -679,18 +683,17 @@ const Planadd = (data) => {
     //------------------------------------------------------------------------- END SELECT ADD
     //------------------------------------------------------------------------- START SELECT EDIT
     const Change_ministry_strategy_Edit = (value) => {
-        let valueARR = value.split('|x|')
         setFormEditPlan({
             ...FormEditPlan,
-            ministry_strategy: valueARR[1],
+            ministry_strategy: value,
             policy: '',
             kpi: '',
             strategy: '',
             project: ''
         })
-        getPlanByIdHead(valueARR[0])
-        getProjectByIdHead(valueARR[0])
-        getIndicatorByIdHead(valueARR[0])
+        getPlanByIdHead(value)
+        getProjectByIdHead(value)
+        getIndicatorByIdHead(value)
     }
 
     const Change_Policy_Edit = (value) => {
@@ -778,7 +781,7 @@ const Planadd = (data) => {
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         data4excAllARR.map((item, i) => {
-                                            return <Option value={item.id + '|x|' + item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })
@@ -798,7 +801,7 @@ const Planadd = (data) => {
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         dataPlanByIdARR.map((item, i) => {
-                                            return <Option value={item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })
@@ -818,7 +821,7 @@ const Planadd = (data) => {
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         dataIndicatorByIdARR.map((item, i) => {
-                                            return <Option value={item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })
@@ -838,7 +841,7 @@ const Planadd = (data) => {
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         dataPlanByIdARR.map((item, i) => {
-                                            return <Option value={item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })
@@ -867,7 +870,7 @@ const Planadd = (data) => {
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         dataProjectByIdARR.map((item, i) => {
-                                            return <Option value={item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })
@@ -921,12 +924,12 @@ const Planadd = (data) => {
                                     optionFilterProp="children"
                                     onChange={Change_ministry_strategy_Edit}
                                     size='large'
-                                    value={FormEditPlan.ministry_strategy}
+                                    value={parseInt(FormEditPlan.ministry_strategy)}
                                 >
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         data4excAllARR.map((item, i) => {
-                                            return <Option value={item.id + '|x|' + item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })
@@ -948,12 +951,12 @@ const Planadd = (data) => {
                                     optionFilterProp="children"
                                     onChange={Change_Policy_Edit}
                                     size='large'
-                                    value={FormEditPlan.policy}
+                                    value={parseInt(FormEditPlan.policy)}
                                 >
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         dataPlanByIdARR.map((item, i) => {
-                                            return <Option value={item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })
@@ -974,12 +977,12 @@ const Planadd = (data) => {
                                     optionFilterProp="children"
                                     onChange={Change_KPI_Edit}
                                     size='large'
-                                    value={FormEditPlan.kpi}
+                                    value={parseInt(FormEditPlan.kpi)}
                                 >
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         dataIndicatorByIdARR.map((item, i) => {
-                                            return <Option value={item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })
@@ -1000,12 +1003,12 @@ const Planadd = (data) => {
                                     optionFilterProp="children"
                                     onChange={Change_Strategy_Edit}
                                     size='large'
-                                    value={FormEditPlan.strategy}
+                                    value={parseInt(FormEditPlan.strategy)}
                                 >
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         dataPlanByIdARR.map((item, i) => {
-                                            return <Option value={item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })
@@ -1035,12 +1038,12 @@ const Planadd = (data) => {
                                     optionFilterProp="children"
                                     onChange={Change_Project_Edit}
                                     size='large'
-                                    value={FormEditPlan.project}
+                                    value={parseInt(FormEditPlan.project)}
                                 >
                                     <Option value="">กรุณาเลือก หรือค้นหา</Option>
                                     {
                                         dataProjectByIdARR.map((item, i) => {
-                                            return <Option value={item.name} key={i}>
+                                            return <Option value={item.id} key={i}>
                                                 {item.name}
                                             </Option>
                                         })

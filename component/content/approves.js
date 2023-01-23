@@ -19,7 +19,7 @@ const Approve = (data) => {
     // ---------------------------------------------------------------------------------------------------- START DATATABLE
     const [datatable, setDatatable] = React.useState({})
     const [FormPlanById, setFormPlanById] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '', aph_status: '' })
-    const [formDiscuss, setFormDiscuss] = useState({ username: '', id: '', status: 0, note: '' })
+    const [formDiscuss, setFormDiscuss] = useState({ username: '', id: '', status: 0, note: '',type_name:'' ,no : ''})
     const [openPlanById, setopenPlanById] = useState(false)
     const [openTimeline, setOpenTimeline] = useState(false)
     // ---------------------------------------------------------------------------------------------------- START GET DATA DETAIL
@@ -201,6 +201,10 @@ const Approve = (data) => {
             field: 'id',
         },
         {
+            label: 'รหัสโครงการ',
+            field: 'aph_plan_id',
+        },
+        {
             label: 'ยุทธศาสตร์กระทรวง',
             field: 'aph_ministry_strategy',
         },
@@ -259,16 +263,17 @@ const Approve = (data) => {
                 dataInfo.push(
                     {
                         'id': i + 1,
-                        'aph_ministry_strategy': item.aph_ministry_strategy,
-                        'aph_policy': item.aph_policy,
-                        'aph_kpi': item.aph_kpi,
-                        'aph_strategy': item.aph_strategy,
+                        'aph_plan_id': item.aph_plan_id,
+                        'aph_ministry_strategy': item.exc4,
+                        'aph_policy': item.plan2,
+                        'aph_kpi': item.indicator,
+                        'aph_strategy': item.plan1,
                         'aph_result': item.aph_result,
-                        'aph_project': item.aph_project,
+                        'aph_project': item.project,
                         'aph_total_budget': item.aph_total_budget,
                         'aph_period': item.aph_period,
                         'aph_responsible_agency': item.aph_responsible_agency,
-                        'status': (<><a onClick={() => showModalOpenTimeline(item.id)}>{item.aph_status == '1' ? 'ผ่านขั้นที่ 1' : item.aph_status == '2' ? 'ผ่านขั้นที่ 2' : item.aph_status == '3' ? 'ผ่านขั้นที่ 3' : item.aph_status == '4' ? 'จบโครงการ' : item.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}</a></>),
+                        'status': (<><a onClick={() => showModalOpenTimeline(item.id)}>{item.aph_status == '1' ? 'ผ่านอนุมัติแผน' : item.aph_status == '2' ? 'ผ่านอนุมัติโครงการ' : item.aph_status == '3' ? 'สรุปโครงการ' : item.aph_status == '4' ? 'จบโครงการ' : item.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}</a></>),
                         'action': (
                             <>
                                 <div className="btn-group">
@@ -309,27 +314,32 @@ const Approve = (data) => {
 
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL PLAN BY ID
     const showModalOpenPlanById = async (id) => {
+        console.log(data)
         setopenPlanById(true)
-        // console.log(id)
-        setFormDiscuss({
-            ...formDiscuss,
-            username: data.data.username,
-            id: id
-        })
+        console.log(id)
+       
         try {
             const token = localStorage.getItem('token')
             const res = await axios.get(`${api}/get-plan-by-id/${id}`, { headers: { "token": token } })
             // console.log(res.data)
             res.data.map((item, i) => {
                 // console.log(item)
+
+                setFormDiscuss({
+                    ...formDiscuss,
+                    username: data.data.username,
+                    id: id,
+                    type_name : item.type_name,
+                    no : item.aph_plan_id
+                })
                 setFormPlanById({
                     ...FormPlanById,
-                    ministry_strategy: item.aph_ministry_strategy,
-                    policy: item.aph_policy,
-                    kpi: item.aph_kpi,
-                    strategy: item.aph_strategy,
+                    ministry_strategy: item.exc4,
+                    policy: item.plan2,
+                    kpi: item.indicator,
+                    strategy: item.plan1,
                     result: item.aph_result,
-                    project: item.aph_project,
+                    project: item.project,
                     total_budget: item.aph_total_budget,
                     period: item.aph_period,
                     responsible_agency: item.aph_responsible_agency,
@@ -431,7 +441,7 @@ const Approve = (data) => {
             <Modal title={null} visible={openPlanById} onOk={handleOkOpenPlanById} onCancel={handleCancelOpenPlanById} okText='บันทึก' cancelText='ยกเลิก' width={2500}>
                 <>
                     <p className='text-center text-bold'>แผนปฏิบัติการ ประจำปีงบประมาณ 2565 เครือข่ายสุขภาพอำเภอบ้านด่านลานหอย</p>
-                    <span><b>ยุทธศาสตร์กระทรวง : </b> {FormPlanById.ministry_strategy}</span><br />
+                    <span><b>ยุทธศาสตร์กระทรวง : </b> {FormPlanById.ministry_strategy} </span><br />
                     <span><b>สอดคล้องกับนโยบายปลัดกระทรวง : </b> {FormPlanById.policy}</span><br />
                     <span><b>ตอบตัวชี้วัด KPI ของกระทรวงสาธารณสุข : </b> {FormPlanById.kpi}</span><br />
                     <span><b>กลยุทธ์ : </b> {FormPlanById.strategy}</span><br />
@@ -550,9 +560,9 @@ const Approve = (data) => {
                                 <div className='card' style={{ backgroundColor: '#f7faf9' }}>
                                     <div className='card-header border-0'>
                                         <center>
-                                            <h1 style={{ fontSize: '850%', marginTop: '70px', color: 'green', height: '172px' }}>
+                                            <h1 style={{ fontSize: '700%', marginTop: '70px', color: 'green', height: '172px' }}>
                                                 <b>
-                                                    {FormPlanById.aph_status == '1' ? 'ผ่านขั้นที่ 1' : FormPlanById.aph_status == '2' ? 'ผ่านขั้นที่ 2' : FormPlanById.aph_status == '3' ? 'ผ่านขั้นที่ 3' : FormPlanById.aph_status == '4' ? 'จบโครงการ' : FormPlanById.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}
+                                                    {FormPlanById.aph_status == '1' ? 'ผ่านอนุมัติแผน' : FormPlanById.aph_status == '2' ? 'ผ่านอนุมัติโครงการ' : FormPlanById.aph_status == '3' ? 'สรุปโครงการ' : FormPlanById.aph_status == '4' ? 'จบโครงการ' : FormPlanById.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}
                                                 </b>
                                             </h1>
                                         </center>
@@ -577,13 +587,13 @@ const Approve = (data) => {
                                                     ไม่ผ่าน
                                                 </option>
                                                 <option value='1'>
-                                                    ผ่านขั้นที่ 1
+                                                    ผ่านอนุมัติแผน
                                                 </option>
                                                 <option value='2'>
-                                                    ผ่านขั้นที่ 2
+                                                    ผ่านอนุมัติโครงการ
                                                 </option>
                                                 <option value='3'>
-                                                    ผ่านขั้นที่ 3
+                                                    สรุปโครงการ
                                                 </option>
                                                 <option value='4'>
                                                     จบโครงการ
@@ -631,7 +641,7 @@ const Approve = (data) => {
                                                     <span className="time"><i className="fas fa-clock" /> {moment(item.apv_upDt).add(543, 'year').format('LLLL')}</span>
                                                     <h3 className="timeline-header no-border">
                                                         <span><b>ผู้พิจารณา : </b>{item.apv_upBy}</span><br />
-                                                        <span><b>สถานะ : </b>{item.apv_status == '1' ? 'ผ่านขั้นที่ 1' : item.apv_status == '2' ? 'ผ่านขั้นที่ 2' : item.apv_status == '3' ? 'ผ่านขั้นที่ 3' : item.apv_status == '4' ? 'จบโครงการ' : item.apv_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}<br />
+                                                        <span><b>สถานะ : </b>{item.apv_status == '1' ? 'ผ่านอนุมัติแผน' : item.apv_status == '2' ? 'ผ่านอนุมัติโครงการ' : item.apv_status == '3' ? 'สรุปโครงการ' : item.apv_status == '4' ? 'จบโครงการ' : item.apv_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}<br />
                                                         </span><b>หมายเหตุ : </b><span>{item.apv_note} </span></h3>
                                                 </div>
                                             </div>
