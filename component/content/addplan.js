@@ -54,6 +54,7 @@ const Planadd = (data) => {
     const [dataPlanByIdARR, setDataPlanByIdARR] = useState([])
     const [dataProjectByIdARR, setDataProjectByIdARR] = useState([])
     const [dataIndicatorByIdARR, setDataIndicatorByIdARR] = useState([])
+    const [dataPolicy, setDataPolicy] = useState([])
 
     useEffect(() => {
         if (data.data.status != '99') {
@@ -647,7 +648,17 @@ const Planadd = (data) => {
         }
     }
     //-------------------------------------------------------------------------------------------- END GET DATA SELECT
-
+    const gePolicy = async (id) => {
+        try {
+            const token = localStorage.getItem('token')
+            const res = await axios.get(`${api}/get-policy`, { headers: { "token": token } })
+            // console.log(res.data)
+            setDataPolicy(res.data)
+            // policy
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
 
     //------------------------------------------------------------------------- START SELECT ADD
@@ -663,6 +674,7 @@ const Planadd = (data) => {
         getPlanByIdHead(value)
         getProjectByIdHead(value)
         getIndicatorByIdHead(value)
+        gePolicy()
     }
 
     const Change_Policy = (value) => {
