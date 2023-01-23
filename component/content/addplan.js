@@ -1051,7 +1051,13 @@ const Planadd = (data) => {
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>โครงการ/กิจกรรม</label>
-                                <Select
+                                 <input type="text" className="form-control" placeholder="รวมงบประมาณทั้งโครงการ"
+                                    value={FormAddPlan.project}
+                                    onChange={e => {
+                                        setFormAddPlan({ ...FormAddPlan, project: e.target.value })
+                                    }}
+                                />
+                                {/* <Select
                                     showSearch
                                     style={{ width: '100%' }}
                                     optionFilterProp="children"
@@ -1067,7 +1073,7 @@ const Planadd = (data) => {
                                             </Option>
                                         })
                                     }
-                                </Select>
+                                </Select> */}
                                 {/* <input type="text" className="form-control" placeholder="โครงการ/กิจกรรม"
                                     value={FormEditPlan.project}
                                     onChange={e => {
