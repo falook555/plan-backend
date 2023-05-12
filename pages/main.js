@@ -182,7 +182,7 @@ const Main = () => {
                                     <a className="nav-link" data-widget="pushmenu" role="button"><i className="fas fa-bars" /></a>
                                 </li>
                                 <li className="nav-item d-none d-sm-inline-block">
-                                    <a className="nav-link" onClick={Home}>หน้าแรก</a>
+                                    <a className="nav-link" onClick={Home}> ระบบติดตามและประเมินผลโครงการ</a>
                                 </li>
                             </ul>
 
@@ -260,8 +260,8 @@ const Main = () => {
                         {/* --------------------------------------------------------------------------------------------------------------------------------------------- SIDEBAR */}
                         <aside className="main-sidebar sidebar-dark-primary elevation-4">
                             <a className="brand-link" onClick={Home}>
-                                <img src="static/dist/img/logo.png" alt="AdminLTE Logo" className="brand-image img-circle elevation-3" style={{ opacity: '.8' }} />
-                                <span className="brand-text font-weight-light">วางแผนโครงการ</span>
+                                <img src="static/dist/img/logo.jpg" alt="AdminLTE Logo" className="brand-image img-circle elevation-3" style={{ opacity: '.8' }} />
+                                <span className="brand-text font-weight-light">Bandan Project Plan</span>
                             </a>
                             <div className="sidebar">
                                 <div className="user-panel mt-3 pb-3 mb-3 d-flex">
