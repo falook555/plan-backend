@@ -126,6 +126,10 @@ const Dashboard = () => {
             label: 'กลยุทธ์',
             field: 'aph_strategy',
         },
+        {
+            label: 'แหล่งงบประมาณ',
+            field: 'dt_budget_source',
+        },
         // {
         //     label: 'ผลลัพธ์/ผลผลิต',
         //     field: 'aph_result',
