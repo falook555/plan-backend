@@ -161,7 +161,7 @@ const Dashboard = () => {
         try {
             const token = localStorage.getItem('token')
             const res = await axios.get(`${api}/get-plan-all`, { headers: { "token": token } })
-            // console.log(res)
+            console.log(res)
             const dataInfo = []
             res.data.map((item, i) => {
                 // console.log(item)
@@ -179,6 +179,7 @@ const Dashboard = () => {
                         'aph_total_budget': item.aph_total_budget,
                         'aph_period': item.aph_period,
                         'aph_responsible_agency': item.aph_responsible_agency,
+                        'dt_budget_source': item.dt_budget_source,
                         'status': (<><span className='badge badge-primary' style={{ fontSize : 13 }} >{item.aph_status == '1' ? 'ผ่านอนุมัติแผน' : item.aph_status == '2' ? 'ผ่านอนุมัติโครงการ' : item.aph_status == '3' ? 'สรุปโครงการ' : item.aph_status == '4' ? 'จบโครงการ' : item.aph_status == '9' ? 'ไม่ผ่าน' : 'รออนุมัติ'}</span></>),
                         'action': (
                             <>
