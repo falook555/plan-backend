@@ -10,7 +10,7 @@ class MyDocument extends Document {
         return (
             <Html>
                 <title>แผนปฏิบัติงาน</title>
-                <link rel="shortcut icon" href="static/dist/img/logo.png" />
+                <link rel="shortcut icon" href="static/dist/img/logo.jpg" />
                 <Head>
                     <div>
                         <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200&display=swap" rel="stylesheet" />

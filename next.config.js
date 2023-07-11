@@ -3,9 +3,9 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
    //สำหรับ static
-    output: 'export',
-    distDir: 'dist',
-    basePath: '/plan',
+    // output: 'export',
+    // distDir: 'dist',
+    // basePath: '/plan',
    //สำหรับ static
 }
 
