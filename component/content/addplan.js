@@ -68,6 +68,8 @@ const Planadd = (data) => {
         }
         getList()
         get4excAll()
+        var thaibath = ArabicNumberToText('546')
+        console.log(thaibath)
     }, [])
 
     const columns = [
@@ -1051,7 +1053,7 @@ const Planadd = (data) => {
                             </div>
                             <div className="form-group col-lg-6 col-12">
                                 <label>โครงการ/กิจกรรม</label>
-                                 <input type="text" className="form-control" placeholder="รวมงบประมาณทั้งโครงการ"
+                                <input type="text" className="form-control" placeholder="รวมงบประมาณทั้งโครงการ"
                                     value={FormAddPlan.project}
                                     onChange={e => {
                                         setFormAddPlan({ ...FormAddPlan, project: e.target.value })
@@ -1342,7 +1344,7 @@ const Planadd = (data) => {
                                         {FormPlanById.total_budget}
                                     </th>
                                     <th colSpan={2}>
-                                        จำนวนเงินตัวหนังสือ
+                                        {ArabicNumberToText(FormPlanById.total_budget)}
                                     </th>
                                 </tr>
                                 <tr className='text-center'>
@@ -1353,7 +1355,7 @@ const Planadd = (data) => {
                                         {FormPlanById.total_budget}
                                     </th>
                                     <th colSpan={2}>
-                                        จำนวนเงินตัวหนังสือ
+                                        {ArabicNumberToText(FormPlanById.total_budget)}
                                     </th>
                                 </tr>
                             </tfoot>

@@ -37,6 +37,7 @@ class MyDocument extends Document {
                     <script defer src="static/plugins/jquery/jquery.min.js"></script>
                     <script defer src="static/plugins/jquery-ui/jquery-ui.min.js"></script>
                     <script defer src="static/dist/js/adminlte.js"></script>
+                    <script defer src="static/dist/js/thaibath.js"></script>
                     <script defer src="static/plugins/pace-progress/pace.min.js" />
                 </body>
             </Html>
