@@ -34,12 +34,19 @@ const Main = () => {
         const token = localStorage.getItem('token')
 
         if (token == null) {
-            back()
+            router.push({
+                pathname: '/main',
+                query: {
+                    path: 'dashboard'
+                },
+            })
+        } else {
+            const decodeToken = jwt_decode(token)
+            setToken(token)
+            setProfile(decodeToken)
         }
 
-        const decodeToken = jwt_decode(token)
-        setToken(token)
-        setProfile(decodeToken)
+
 
 
 
@@ -98,10 +105,16 @@ const Main = () => {
     }
 
     const logOut = () => {
+        if (Token == '') {
+            router.push({
+                pathname: '/login'
+            })
+        } else {
+            router.reload()
+        }
+
+
         localStorage.removeItem('token')
-        router.push({
-            pathname: '/'
-        })
     }
     // ---------------------------------------------------------------------------------------------------------------------------- END ALL ROUTER
 
@@ -173,145 +186,154 @@ const Main = () => {
                 theme={'colored'}
             />
             {
-                Token == null || Token == '' ? '' :
-                    <div className='wrapper'>
-                        {/* --------------------------------------------------------------------------------------------------------------------------------------------- NAV */}
-                        <nav className="main-header navbar navbar-expand navbar-white navbar-light" style={{ zIndex: 5 }}>
-                            <ul className="navbar-nav">
-                                <li className="nav-item">
-                                    <a className="nav-link" data-widget="pushmenu" role="button"><i className="fas fa-bars" /></a>
-                                </li>
-                                <li className="nav-item d-none d-sm-inline-block">
-                                    <a className="nav-link" onClick={Home}> ระบบติดตามและประเมินผลโครงการ</a>
-                                </li>
-                            </ul>
+                // Token == null || Token == '' ? '' :
+                <div className='wrapper'>
+                    {/* --------------------------------------------------------------------------------------------------------------------------------------------- NAV */}
+                    <nav className="main-header navbar navbar-expand navbar-white navbar-light" style={{ zIndex: 5 }}>
+                        <ul className="navbar-nav">
+                            <li className="nav-item">
+                                <a className="nav-link" data-widget="pushmenu" role="button"><i className="fas fa-bars" /></a>
+                            </li>
+                            <li className="nav-item d-none d-sm-inline-block">
+                                <a className="nav-link" onClick={Home}> ระบบติดตามและประเมินผลโครงการ</a>
+                            </li>
+                        </ul>
 
-                            <ul className="navbar-nav ml-auto">
-                                <li className="nav-item">
-                                    <a className="nav-link" onClick={() => showModal(profile)}>
-                                        <i className="fa fa-cogs" />
-                                    </a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link">
-                                        <i className="far fa-bell" />
-                                    </a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" data-widget="fullscreen" role="button">
-                                        <i className="fas fa-expand-arrows-alt" />
-                                    </a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" onClick={logOut}>
-                                        <i className="fas fa-sign-out-alt" />
-                                    </a>
-                                </li>
-                            </ul>
+                        <ul className="navbar-nav ml-auto">
+                            <li className="nav-item">
+                                <a className="nav-link" onClick={() => showModal(profile)}>
+                                    <i className="fa fa-cogs" />
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link">
+                                    <i className="far fa-bell" />
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" data-widget="fullscreen" role="button">
+                                    <i className="fas fa-expand-arrows-alt" />
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" onClick={logOut}>
+                                    <i className="fas fa-sign-out-alt" />
+                                </a>
+                            </li>
+                        </ul>
 
-                            {/* //------------------------------------------------------------------------------------------------------------------------ START EDIT PASSWORD */}
-                            <Modal title="เปลี่ยนรหัสผ่าน" footer={null} visible={editPassword} onOk={handleOk} onCancel={handleCancel}>
+                        {/* //------------------------------------------------------------------------------------------------------------------------ START EDIT PASSWORD */}
+                        <Modal title="เปลี่ยนรหัสผ่าน" footer={null} visible={editPassword} onOk={handleOk} onCancel={handleCancel}>
 
-                                {typeCheck == 0 ?
-                                    <>
+                            {typeCheck == 0 ?
+                                <>
+                                    <div className="form-group col-lg-12 col-12">
+                                        <label htmlFor="passwordOld">รหัสผ่านเดิม</label>
+                                        <input type="password" className="form-control" id="passwordOld" placeholder="รหัสผ่านเดิม"
+                                            onChange={e => {
+                                                setinputPassword(e.target.value)
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="form-group col-lg-12 col-12">
+                                        <button className='btn btn-info btn-sm btn-block' onClick={onCheck}>ยืนยัน</button>
+                                    </div>
+                                </>
+                                : <>
+                                    <div className='row'>
                                         <div className="form-group col-lg-12 col-12">
-                                            <label htmlFor="passwordOld">รหัสผ่านเดิม</label>
-                                            <input type="password" className="form-control" id="passwordOld" placeholder="รหัสผ่านเดิม"
+                                            <label htmlFor="passwordNew">รหัสผ่านใหม่</label>
+
+                                            <input type="password" className="form-control" id="passwordNew" placeholder="รหัสผ่านใหม่"
                                                 onChange={e => {
-                                                    setinputPassword(e.target.value)
+                                                    setpasswordNew({ ...passwordNew, newPassword: e.target.value })
                                                 }}
                                             />
                                         </div>
                                         <div className="form-group col-lg-12 col-12">
-                                            <button className='btn btn-info btn-sm btn-block' onClick={onCheck}>ยืนยัน</button>
+                                            <label htmlFor="passwordConfirm">ยืนยันรหัสผ่านใหม่ </label>
+                                            <input type="password" className="form-control" id="passwordConfirm" placeholder="ยืนยันรหัสผ่านใหม่"
+                                                onChange={e => {
+                                                    setpasswordNew({ ...passwordNew, newPasswordConfrim: e.target.value })
+                                                }}
+                                            />
                                         </div>
-                                    </>
-                                    : <>
-                                        <div className='row'>
-                                            <div className="form-group col-lg-12 col-12">
-                                                <label htmlFor="passwordNew">รหัสผ่านใหม่</label>
-
-                                                <input type="password" className="form-control" id="passwordNew" placeholder="รหัสผ่านใหม่"
-                                                    onChange={e => {
-                                                        setpasswordNew({ ...passwordNew, newPassword: e.target.value })
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className="form-group col-lg-12 col-12">
-                                                <label htmlFor="passwordConfirm">ยืนยันรหัสผ่านใหม่ </label>
-                                                <input type="password" className="form-control" id="passwordConfirm" placeholder="ยืนยันรหัสผ่านใหม่"
-                                                    onChange={e => {
-                                                        setpasswordNew({ ...passwordNew, newPasswordConfrim: e.target.value })
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className="form-group col-lg-12 col-12">
-                                                <button className='btn btn-info btn-sm btn-block' onClick={handleOk}>บันทึก</button>
-                                            </div>
+                                        <div className="form-group col-lg-12 col-12">
+                                            <button className='btn btn-info btn-sm btn-block' onClick={handleOk}>บันทึก</button>
                                         </div>
-                                    </>
-                                }
-                            </Modal>
-                            {/* //------------------------------------------------------------------------------------------------------------------------ START EDIT PASSWORD */}
-
-                        </nav>
-                        {/* --------------------------------------------------------------------------------------------------------------------------------------------- NAV */}
-
-                        {/* --------------------------------------------------------------------------------------------------------------------------------------------- SIDEBAR */}
-                        <aside className="main-sidebar sidebar-dark-primary elevation-4">
-                            <a className="brand-link" onClick={Home}>
-                                <img src="static/dist/img/logo.jpg" alt="AdminLTE Logo" className="brand-image img-circle elevation-3" style={{ opacity: '.8' }} />
-                                <span className="brand-text font-weight-light">Bandan Project Plan</span>
-                            </a>
-                            <div className="sidebar">
-                                <div className="user-panel mt-3 pb-3 mb-3 d-flex">
-                                    <div className="image">
-                                        <img src="static/dist/img/default.jpg" className="img-circle elevation-2" alt="User Image" />
                                     </div>
-                                    <div className="info">
-                                        <a className="d-block" onClick={Home}>{profile.fullname}</a>
-                                    </div>
+                                </>
+                            }
+                        </Modal>
+                        {/* //------------------------------------------------------------------------------------------------------------------------ START EDIT PASSWORD */}
+
+                    </nav>
+                    {/* --------------------------------------------------------------------------------------------------------------------------------------------- NAV */}
+
+                    {/* --------------------------------------------------------------------------------------------------------------------------------------------- SIDEBAR */}
+                    <aside className="main-sidebar sidebar-dark-primary elevation-4">
+                        <a className="brand-link" onClick={Home}>
+                            <img src="static/dist/img/logo.jpg" alt="AdminLTE Logo" className="brand-image img-circle elevation-3" style={{ opacity: '.8' }} />
+                            <span className="brand-text font-weight-light">Bandan Project Plan</span>
+                        </a>
+                        <div className="sidebar">
+                            <div className="user-panel mt-3 pb-3 mb-3 d-flex">
+                                <div className="image">
+                                    <img src="static/dist/img/default.jpg" className="img-circle elevation-2" alt="User Image" />
                                 </div>
-                                <nav className="mt-2">
-                                    <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                                        <li className="nav-header">Setting And Control</li>
-                                        <li className="nav-item">
-                                            <a className={path == 'controluser' ? 'nav-link active' : 'nav-link'} onClick={ControlUser}>
-                                                <i className="nav-icon fa fa-cogs" />
-                                                <p>
-                                                    จัดการผู้ใช้งาน
-                                                </p>
-                                            </a>
-                                        </li>
-                                        <li className="nav-item">
-                                            <a className={path == 'controldept' ? 'nav-link active' : 'nav-link'} onClick={ControlDept}>
-                                                <i className="nav-icon fa fa-cogs" />
-                                                <p>
-                                                    จัดการรายชื่อแผนก
-                                                </p>
-                                            </a>
-                                        </li>
+                                <div className="info">
+                                    <a className="d-block" onClick={Home}>{profile.fullname}</a>
+                                </div>
+                            </div>
+                            <nav className="mt-2">
+                                <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                                    <li className="nav-header">Setting And Control</li>
+                                    <li className="nav-item">
+                                        <a className={path == 'controluser' ? 'nav-link active' : 'nav-link'} onClick={ControlUser}>
+                                            <i className="nav-icon fa fa-cogs" />
+                                            <p>
+                                                จัดการผู้ใช้งาน
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a className={path == 'controldept' ? 'nav-link active' : 'nav-link'} onClick={ControlDept}>
+                                            <i className="nav-icon fa fa-cogs" />
+                                            <p>
+                                                จัดการรายชื่อแผนก
+                                            </p>
+                                        </a>
+                                    </li>
 
-                                        <li className="nav-header">Functional</li>
+                                    <li className="nav-header">Functional</li>
 
-                                        <li className="nav-item">
-                                            <a className={path == 'add-plan' ? 'nav-link active' : 'nav-link'} onClick={AddPlan}>
-                                                <i className="nav-icon fa fa-upload" />
-                                                <p>
-                                                    เพิ่มแผนการปฏิบัติงาน
-                                                </p>
-                                            </a>
-                                        </li>
+                                    <li className="nav-item">
+                                        <a className={path == 'add-plan' ? 'nav-link active' : 'nav-link'} onClick={AddPlan}>
+                                            <i className="nav-icon fa fa-upload" />
+                                            <p>
+                                                เพิ่มแผนการปฏิบัติงาน
+                                            </p>
+                                        </a>
+                                    </li>
 
-                                        <li className="nav-item">
-                                            <a className={path == 'approves' ? 'nav-link active' : 'nav-link'} onClick={Approves}>
-                                                <i className="nav-icon fa fa-sitemap" />
-                                                <p>
-                                                    งานประกัน
-                                                </p>
-                                            </a>
-                                        </li>
-                                        {/* <li className="nav-item">
+                                    <li className="nav-item">
+                                        <a className={path == 'approves' ? 'nav-link active' : 'nav-link'} onClick={Approves}>
+                                            <i className="nav-icon fa fa-sitemap" />
+                                            <p>
+                                                งานประกัน
+                                            </p>
+                                        </a>
+                                    </li>
+
+                                    <li className="nav-item">
+                                        <a className={path == 'approves' ? 'nav-link active' : 'nav-link'} onClick={logOut}>
+                                            <i className="nav-icon fas fa-sign-out-alt" />
+                                            <p>
+                                                {Token == '' ? 'เข้าสู่ระบบ' : 'ออกจากระบบ'}
+                                            </p>
+                                        </a>
+                                    </li>
+                                    {/* <li className="nav-item">
                                             <a className='nav-link' href='static/dist/manual/manual.pdf' target={'_blank'} rel="noreferrer">
                                                 <i className="nav-icon fa fa-file-pdf" />
                                                 <p>
@@ -319,33 +341,33 @@ const Main = () => {
                                                 </p>
                                             </a>
                                         </li> */}
-                                    </ul>
-                                </nav>
-                            </div>
-                        </aside>
-                        {/* --------------------------------------------------------------------------------------------------------------------------------------------- SIDEBAR */}
-
-                        {/* --------------------------------------------------------------------------------------------------------------------------------------------- CONTENT */}
-                        <div className="content-wrapper">
-                            {
-                                path == 'controluser' ? <Controluser data={profile} />
-                                    : path == 'controldept' ? <Deptadd data={profile} />
-                                        : path == 'add-plan' ? <Planadd data={profile} />
-                                            : path == 'approves' ? <Approve data={profile} />
-                                                : <Dashboard />
-                            }
+                                </ul>
+                            </nav>
                         </div>
-                        {/* --------------------------------------------------------------------------------------------------------------------------------------------- CONTENT */}
+                    </aside>
+                    {/* --------------------------------------------------------------------------------------------------------------------------------------------- SIDEBAR */}
 
-                        {/* --------------------------------------------------------------------------------------------------------------------------------------------- FOOTER */}
-                        <footer className="main-footer">
-                            <strong>Copyright © 2021 - {moment().format("YYYY")} <a href='https://www.facebook.com/profile.php?id=100080703297745' target={'_blank'} rel="noreferrer">กนต์ธร โทนทรัพย์</a> All rights reserved.</strong>
-                            <div className="float-right d-none d-sm-inline-block">
-                                <b>Version</b> 0.0.1
-                            </div>
-                        </footer>
-                        {/* --------------------------------------------------------------------------------------------------------------------------------------------- FOOTER */}
+                    {/* --------------------------------------------------------------------------------------------------------------------------------------------- CONTENT */}
+                    <div className="content-wrapper">
+                        {
+                            path == 'controluser' ? <Controluser data={profile} />
+                                : path == 'controldept' ? <Deptadd data={profile} />
+                                    : path == 'add-plan' ? <Planadd data={profile} />
+                                        : path == 'approves' ? <Approve data={profile} />
+                                            : <Dashboard />
+                        }
                     </div>
+                    {/* --------------------------------------------------------------------------------------------------------------------------------------------- CONTENT */}
+
+                    {/* --------------------------------------------------------------------------------------------------------------------------------------------- FOOTER */}
+                    <footer className="main-footer">
+                        <strong>Copyright © 2021 - {moment().format("YYYY")} <a href='https://www.facebook.com/profile.php?id=100080703297745' target={'_blank'} rel="noreferrer">กนต์ธร โทนทรัพย์</a> All rights reserved.</strong>
+                        <div className="float-right d-none d-sm-inline-block">
+                            <b>Version</b> 0.0.1
+                        </div>
+                    </footer>
+                    {/* --------------------------------------------------------------------------------------------------------------------------------------------- FOOTER */}
+                </div>
             }
         </div>
     )

@@ -18,7 +18,10 @@ const Login = () => {
         const token = localStorage.getItem('token')
         if (token == null) {
             router.push({
-                pathname: '/',
+                pathname: '/main',
+                query: {
+                    path: 'dashboard'
+                },
             })
         } else {
             setToken(token)
@@ -81,7 +84,7 @@ const Login = () => {
     return (
         <>
             {
-                Token == null || Token == '' ?
+                // Token == null || Token == '' ?
                     <div className='hold-transition login-page bgimg'>
                         <ToastContainer
                             position="top-center"
@@ -137,7 +140,7 @@ const Login = () => {
                             </div>
                         </div>
                     </div>
-                    : ''
+                    // : ''
             }
         </>
     )

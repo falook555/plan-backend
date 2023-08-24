@@ -33,8 +33,8 @@ const Dashboard = () => {
     const getMoneyTotal = async () => {
         // activity
         try {
-            const token = localStorage.getItem('token')
-            const res = await axios.get(`${api}/get-money-total`, { headers: { "token": token } })
+            
+            const res = await axios.get(`${api}/get-money-total`)
             setDataMoneyTotal(res.data[0].tsum)
         } catch (error) {
             console.log(error)
@@ -43,8 +43,8 @@ const Dashboard = () => {
     const getMoneyBetween = async () => {
         // activity
         try {
-            const token = localStorage.getItem('token')
-            const res = await axios.get(`${api}/get-money-between`, { headers: { "token": token } })
+            
+            const res = await axios.get(`${api}/get-money-between`)
             setDataMoneyBetween(res.data[0].tsum)
         } catch (error) {
             console.log(error)
@@ -53,8 +53,8 @@ const Dashboard = () => {
     const getMoneySuccess = async () => {
         // activity
         try {
-            const token = localStorage.getItem('token')
-            const res = await axios.get(`${api}/get-money-success`, { headers: { "token": token } })
+            
+            const res = await axios.get(`${api}/get-money-success`)
             setDataMoneySuccess(res.data[0].tsum)
         } catch (error) {
             console.log(error)
@@ -63,8 +63,8 @@ const Dashboard = () => {
     const getProjectTotal = async () => {
         // activity
         try {
-            const token = localStorage.getItem('token')
-            const res = await axios.get(`${api}/get-project-total`, { headers: { "token": token } })
+            
+            const res = await axios.get(`${api}/get-project-total`)
             setDataProjectTotal(res.data[0].tcount)
         } catch (error) {
             console.log(error)
@@ -73,8 +73,8 @@ const Dashboard = () => {
     const getProjectSuccess = async () => {
         // activity
         try {
-            const token = localStorage.getItem('token')
-            const res = await axios.get(`${api}/get-project-success`, { headers: { "token": token } })
+            
+            const res = await axios.get(`${api}/get-project-success`)
             setDataProjectSuccess(res.data[0].tcount)
         } catch (error) {
             console.log(error)
@@ -83,8 +83,8 @@ const Dashboard = () => {
     const getProjectBewteen = async () => {
         // activity
         try {
-            const token = localStorage.getItem('token')
-            const res = await axios.get(`${api}/get-project-between`, { headers: { "token": token } })
+            
+            const res = await axios.get(`${api}/get-project-between`)
             setDataProjectBetween(res.data[0].tcount)
         } catch (error) {
             console.log(error)
@@ -93,8 +93,8 @@ const Dashboard = () => {
     const getProjectNot = async () => {
         // activity
         try {
-            const token = localStorage.getItem('token')
-            const res = await axios.get(`${api}/get-project-not`, { headers: { "token": token } })
+            
+            const res = await axios.get(`${api}/get-project-not`)
             setDataProjectNot(res.data[0].tcount)
         } catch (error) {
             console.log(error)
@@ -159,8 +159,8 @@ const Dashboard = () => {
 
     const getList = async () => {
         try {
-            const token = localStorage.getItem('token')
-            const res = await axios.get(`${api}/get-plan-all`, { headers: { "token": token } })
+            
+            const res = await axios.get(`${api}/get-plan-all`)
             console.log(res)
             const dataInfo = []
             res.data.map((item, i) => {
