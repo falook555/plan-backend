@@ -326,7 +326,7 @@ const Main = () => {
                                     </li>
 
                                     <li className="nav-item">
-                                        <a className={path == 'approves' ? 'nav-link active' : 'nav-link'} onClick={logOut}>
+                                        <a className={path == 'login' ? 'nav-link active' : 'nav-link'} onClick={logOut}>
                                             <i className="nav-icon fas fa-sign-out-alt" />
                                             <p>
                                                 {Token == '' ? 'เข้าสู่ระบบ' : 'ออกจากระบบ'}
@@ -361,7 +361,7 @@ const Main = () => {
 
                     {/* --------------------------------------------------------------------------------------------------------------------------------------------- FOOTER */}
                     <footer className="main-footer">
-                        <strong>Copyright © 2021 - {moment().format("YYYY")} <a href='https://www.facebook.com/profile.php?id=100080703297745' target={'_blank'} rel="noreferrer">กนต์ธร โทนทรัพย์</a> All rights reserved.</strong>
+                        <strong>Copyright © 2021 - {moment().format("YYYY")}  All rights reserved.</strong>
                         <div className="float-right d-none d-sm-inline-block">
                             <b>Version</b> 0.0.1
                         </div>

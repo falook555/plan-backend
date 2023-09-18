@@ -254,13 +254,16 @@ const Planadd = (data) => {
 
     // ------------------------------------------------------------------------------------------------------------------------------------------ START MODAL EDIT
     const showModalEDIT = async (id) => {
+       
         setEdit(true)
         try {
             const token = localStorage.getItem('token')
             const res = await axios.get(`${api}/get-plan-by-id/${id}`, { headers: { "token": token } })
             // console.log(res.data)
+
             res.data.map((item, i) => {
-                // console.log(item)
+                console.log(item.aph_ministry_strategy)
+                Change_ministry_strategy_Edit(item.aph_ministry_strategy)
                 setFormEditPlan({
                     ...FormEditPlan,
                     id: item.id,
@@ -616,9 +619,10 @@ const Planadd = (data) => {
 
     const getPlanByIdHead = async (id) => {
         try {
+            console.log(id)
             const token = localStorage.getItem('token')
             const res = await axios.get(`${api}/get-plan-by-id-head/${id}`, { headers: { "token": token } })
-            // console.log(res.data)
+            console.log(res.data)
             setDataPlanByIdARR(res.data)
             // policy
         } catch (error) {
@@ -816,7 +820,7 @@ const Planadd = (data) => {
                                     {
                                         dataPolicy.map((item, i) => {
                                             return <Option value={item.id} key={i}>
-                                                {item.name}
+                                                {item.id} {item.name}
                                             </Option>
                                         })
                                     }
@@ -978,7 +982,7 @@ const Planadd = (data) => {
                                     {
                                         dataPlanByIdARR.map((item, i) => {
                                             return <Option value={item.id} key={i}>
-                                                {item.name}
+                                                {item.id} {item.name}
                                             </Option>
                                         })
                                     }

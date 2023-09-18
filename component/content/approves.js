@@ -19,7 +19,7 @@ const Approve = (data) => {
     // ---------------------------------------------------------------------------------------------------- START DATATABLE
     const [datatable, setDatatable] = React.useState({})
     const [FormPlanById, setFormPlanById] = useState({ ministry_strategy: '', policy: '', kpi: '', strategy: '', result: '', project: '', total_budget: '', period: '', responsible_agency: '', aph_status: '' })
-    const [formDiscuss, setFormDiscuss] = useState({ username: '', id: '', status: 0, note: '',type_name:'' ,no : ''})
+    const [formDiscuss, setFormDiscuss] = useState({ username: '', id: '', status: 0, note: '', type_name: '', no: '' })
     const [openPlanById, setopenPlanById] = useState(false)
     const [openTimeline, setOpenTimeline] = useState(false)
     // ---------------------------------------------------------------------------------------------------- START GET DATA DETAIL
@@ -317,7 +317,7 @@ const Approve = (data) => {
         console.log(data)
         setopenPlanById(true)
         console.log(id)
-       
+
         try {
             const token = localStorage.getItem('token')
             const res = await axios.get(`${api}/get-plan-by-id/${id}`, { headers: { "token": token } })
@@ -329,8 +329,8 @@ const Approve = (data) => {
                     ...formDiscuss,
                     username: data.data.username,
                     id: id,
-                    type_name : item.type_name,
-                    no : item.aph_plan_id
+                    type_name: item.type_name,
+                    no: item.aph_plan_id
                 })
                 setFormPlanById({
                     ...FormPlanById,
@@ -537,7 +537,8 @@ const Approve = (data) => {
                                     </th>
                                     <th colSpan={2}>
                                         {/* {ArabicNumberToText(FormPlanById.total_budget)} */}
-                                        จำนวนเงินตัวหนังสือ
+
+                                        {ArabicNumberToText(FormPlanById.total_budget)}
                                     </th>
                                 </tr>
                                 <tr className='text-center'>
@@ -548,8 +549,9 @@ const Approve = (data) => {
                                         {FormPlanById.total_budget}
                                     </th>
                                     <th colSpan={2}>
-                                        {/* {ArabicNumberToText(FormPlanById.total_budget)} */}
-                                        จำนวนเงินตัวหนังสือ
+
+                                        {ArabicNumberToText(FormPlanById.total_budget)}
+
                                     </th>
                                 </tr>
                             </tfoot>
